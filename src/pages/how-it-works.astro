@@ -1,0 +1,187 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+const asideLinks = [
+  { label: 'How guides are built', href: '#how-guides-are-built' },
+  { label: 'Risk levels', href: '#risk-levels' },
+  { label: 'What we do not do', href: '#what-we-do-not-do' },
+  { label: 'Using a guide safely', href: '#using-a-guide-safely' },
+  { label: 'Corrections and feedback', href: '#corrections-and-feedback' },
+];
+---
+
+<ContentLayout
+  title="How FixProblemNow works"
+  metaTitle="How It Works: Our Troubleshooting Method"
+  description="See how FixProblemNow researches, writes, orders and reviews troubleshooting guides, how risk levels work, and what the site cannot do."
+  canonical="/how-it-works/"
+  eyebrow="Our method"
+  intro="FixProblemNow is a reference library, not a remote repair service. Here is how a guide is put together, how the steps are ordered, and where the limits are."
+  asideLinks={asideLinks}
+  asideNote="If a guide is unclear or a step is wrong for your model, tell us. Corrections are part of the process."
+>
+  <h2 id="what-this-site-is">What this site is</h2>
+  <p>
+    FixProblemNow publishes independent troubleshooting guides for everyday technology: computers,
+    phones, home networks, printers, email, software, televisions, streaming devices, peripherals,
+    storage and accounts. The aim is to help you identify the most likely cause, try the safest
+    checks first, and recognise the point where a repair or account recovery process needs someone
+    else.
+  </p>
+  <p>
+    The site does not connect to your device, run scans, request remote access, or require an
+    account. Every published guide is readable without signing in. Manufacturer names are used to
+    describe compatibility and to point to official tools; {site.name} is not affiliated with those
+    companies.
+  </p>
+
+  <h2 id="how-guides-are-built">How guides are built</h2>
+  <ol class="steps">
+    <li>
+      <strong>Start with a specific symptom.</strong>
+      <p>
+        A guide is written for one recognisable problem, such as a laptop that shows no lights or a
+        printer that stays offline while other devices work. Broad topics are split so the steps do
+        not contradict each other.
+      </p>
+    </li>
+    <li>
+      <strong>Check the supported tools and menus.</strong>
+      <p>
+        Steps are checked against current manufacturer documentation and operating-system support
+        pages. Where Windows 10 and Windows 11 differ, or where Android manufacturers use different
+        labels, the guide says so rather than pretending one menu fits every device.
+      </p>
+    </li>
+    <li>
+      <strong>Order steps by risk, not by cleverness.</strong>
+      <p>
+        Reversible checks come first: cables, power, connections, restarts, and built-in
+        troubleshooters. Destructive actions such as clearing app data, resetting a device, or
+        erasing a disk are placed later with a warning and a backup requirement.
+      </p>
+    </li>
+    <li>
+      <strong>Add verification and a stopping point.</strong>
+      <p>
+        Each guide explains how to confirm that the problem is actually fixed and when to stop
+        before making things worse. A page that only says “try these ten things” without either is
+        not finished.
+      </p>
+    </li>
+    <li>
+      <strong>Review links, sources and dates.</strong>
+      <p>
+        Official documentation is linked in the guide. Publication and update dates come from the
+        article metadata; we do not stagger dates to look fresher. A correction changes the update
+        date.
+      </p>
+    </li>
+  </ol>
+
+  <div class="callout callout--note">
+    <p class="callout__label">Transparency</p>
+    <p>
+      We do not claim to have physically tested every device, app version, or router model named on
+      the site. Guides combine documented behaviour, standard troubleshooting practice, and
+      safety review. Model-specific behaviour can still differ, which is why each guide includes a
+      “when to stop” section and links to the manufacturer’s own instructions.
+    </p>
+  </div>
+
+  <h2 id="risk-levels">Risk levels</h2>
+  <p>
+    Every guide carries a risk label. The label describes the chance of data loss, hardware damage,
+    or a change that is difficult to undo if a step is followed incorrectly.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Level</th>
+          <th scope="col">What it means</th>
+          <th scope="col">Examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge--risk-low">Low</span></td>
+          <td>Reversible checks that should not remove files or change hardware.</td>
+          <td>Restarting a router, reseating a cable, clearing an app cache.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge--risk-moderate">Moderate</span></td>
+          <td>Settings or repairs that can remove local data or need care to reverse.</td>
+          <td>Reinstalling a driver, resetting network settings, removing an app.</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge--risk-high">High</span></td>
+          <td>Destructive or hardware-adjacent steps where a mistake can cause data loss or injury.</td>
+          <td>Erasing a disk, opening a device, replacing a battery, editing firmware.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Risk labels are guidance, not a guarantee. A low-risk step can still cause a problem on a
+    damaged device. Stop if you see smoke, smell burning, notice swelling, or find liquid inside
+    equipment.
+  </p>
+
+  <h2 id="what-we-do-not-do">What we do not do</h2>
+  <ul class="icon-list">
+    <li>
+      <Icon name="close" size={18} />
+      <div>
+        <strong>We do not remotely access devices.</strong>
+        <span>No guide asks you to install a remote-control tool or give a stranger access to your computer.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="close" size={18} />
+      <div>
+        <strong>We do not recover accounts.</strong>
+        <span>Password, two-factor and account recovery must go through the provider that controls the account.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="close" size={18} />
+      <div>
+        <strong>We do not sell repairs or parts.</strong>
+        <span>There are no repair bookings, parts sales, or paid support calls on this site.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="close" size={18} />
+      <div>
+        <strong>We do not guarantee an outcome.</strong>
+        <span>Hardware faults, account locks and provider outages can be outside anyone’s remote control.</span>
+      </div>
+    </li>
+  </ul>
+
+  <h2 id="using-a-guide-safely">Using a guide safely</h2>
+  <ul class="checklist">
+    <li>Read the whole guide before changing anything, especially the safety notes.</li>
+    <li>Back up important files before a reset, reinstall, disk repair, or storage change.</li>
+    <li>Change one thing at a time so you can tell which step made a difference.</li>
+    <li>Record the original setting before you change it, including network names and DNS values.</li>
+    <li>Use official manufacturer downloads and support pages rather than unofficial driver bundles.</li>
+    <li>Stop when a step feels unsafe, when a device heats up unusually, or when data is at risk.</li>
+  </ul>
+
+  <h2 id="corrections-and-feedback">Corrections and feedback</h2>
+  <p>
+    Each guide includes a feedback control and a link to report an issue. If a menu has moved, a
+    command has changed, or a step is wrong for your model, use the
+    <a href="/contact/?topic=correction">contact form</a> and include the guide URL, device model,
+    software version, and what you saw. We cannot promise an individual reply time, but correction
+    reports are reviewed and the guide is updated when the problem is confirmed.
+  </p>
+  <p>
+    The full process is described in our <a href="/editorial-policy/">editorial policy</a> and
+    <a href="/corrections-policy/">corrections policy</a>.
+  </p>
+</ContentLayout>

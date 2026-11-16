@@ -1,0 +1,122 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const asideLinks = [
+  { label: 'Our target', href: '#our-target' },
+  { label: 'What is implemented', href: '#what-is-implemented' },
+  { label: 'Known limitations', href: '#known-limitations' },
+  { label: 'Report a barrier', href: '#report-a-barrier' },
+  { label: 'Assessment status', href: '#assessment-status' },
+];
+---
+
+<ContentLayout
+  title="Accessibility"
+  metaTitle="Accessibility: Target, Measures and Feedback"
+  description="FixProblemNow aims for WCAG 2.2 AA. Read the accessibility measures, known limitations and how to report a barrier with the site."
+  canonical="/accessibility/"
+  eyebrow="Accessibility"
+  intro="The site targets WCAG 2.2 level AA. This page explains what has been implemented, where limitations remain, and how to report a barrier that affects you."
+  updated="2026-11-15"
+  asideLinks={asideLinks}
+  asideNote="This page describes the current implementation. It is not a claim of certified conformance."
+>
+  <h2 id="our-target">Our target</h2>
+  <p>
+    FixProblemNow aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. The
+    target applies to the public pages: guides, category pages, search, forms, policies, and the
+    site navigation. It does not automatically apply to third-party sites linked from a guide.
+  </p>
+  <p>
+    Accessibility is treated as part of the build rather than a separate add-on. The site is
+    designed to work with a keyboard, a screen reader, enlarged text, reduced motion, and a narrow
+    viewport.
+  </p>
+
+  <h2 id="what-is-implemented">What is implemented</h2>
+  <ul class="icon-list">
+    <li>
+      <Icon name="check" size={18} />
+      <div>
+        <strong>Semantic structure</strong>
+        <span>One main landmark, a skip link, descriptive headings, lists, tables with headers, and labelled navigation regions.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="check" size={18} />
+      <div>
+        <strong>Keyboard access</strong>
+        <span>Menus, accordions, search suggestions and forms can be operated without a mouse. Focus is always visible.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="check" size={18} />
+      <div>
+        <strong>Colour and text</strong>
+        <span>Body text and controls are checked for contrast. Text can be enlarged without a fixed-height layout clipping content.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="check" size={18} />
+      <div>
+        <strong>Forms</strong>
+        <span>Every field has a visible label, errors are announced and linked to the field, and success is only shown after a real server response.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="check" size={18} />
+      <div>
+        <strong>Motion and zoom</strong>
+        <span>Animations respect the reduced-motion preference, and layouts reflow at 320 CSS pixels without horizontal scrolling.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="check" size={18} />
+      <div>
+        <strong>Search</strong>
+        <span>The search field exposes combobox semantics, keyboard navigation, an announced result count, and a visible no-results state.</span>
+      </div>
+    </li>
+  </ul>
+
+  <h2 id="known-limitations">Known limitations</h2>
+  <ul>
+    <li>
+      Some guides include tables with technical values. On very narrow screens these tables scroll
+      horizontally inside a labelled container rather than shrinking the text.
+    </li>
+    <li>
+      Third-party manufacturer pages linked from guides may not meet the same accessibility standard.
+    </li>
+    <li>
+      Search suggestions are enhanced with JavaScript. Without JavaScript, the search form still
+      submits to the search page, but live suggestions are unavailable.
+    </li>
+    <li>
+      The site does not provide a fully audited screen-reader experience for every combination of
+      browser and assistive technology. Testing is ongoing, and reported barriers are prioritised.
+    </li>
+  </ul>
+
+  <h2 id="report-a-barrier">Report a barrier</h2>
+  <p>
+    If a page is difficult or impossible to use, use the
+    <a href="/contact/?topic=accessibility">contact form</a> and choose the accessibility topic.
+    Please include the page URL, the task you were trying to complete, the browser and assistive
+    technology you used, and what happened. Do not send personal files unless they are needed and
+    safe to share.
+  </p>
+
+  <h2 id="assessment-status">Assessment status</h2>
+  <p>
+    The site has been built and checked against the WCAG 2.2 AA success criteria using automated
+    checks, keyboard testing, responsive checks, and manual review of the main templates. This is
+    not a formal third-party audit or a certification. The page will be updated if an independent
+    assessment is completed or if a known limitation is resolved.
+  </p>
+  <p>
+    See also the <a href="/editorial-policy/">editorial policy</a> for content standards and the
+    <a href="/privacy-policy/">privacy policy</a> for how contact details are handled.
+  </p>
+</ContentLayout>

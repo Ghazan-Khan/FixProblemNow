@@ -1,0 +1,31 @@
+{
+  "name": "fixproblemnow",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "description": "FixProblemNow — independent, practical troubleshooting guides for everyday technology problems.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "prebuild": "node scripts/generate-redirects.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test:links": "node scripts/check-site.mjs",
+    "test": "npm run check && npm run build && npm run test:links",
+    "assets": "node scripts/generate-assets.mjs",
+    "og": "node scripts/generate-assets.mjs"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.4.0",
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^5.13.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "sharp": "^0.34.0",
+    "typescript": "^5.8.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

@@ -1,0 +1,92 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const asideLinks = [
+  { label: 'General information only', href: '#general-information-only' },
+  { label: 'Physical safety', href: '#physical-safety' },
+  { label: 'Data and backups', href: '#data-and-backups' },
+  { label: 'Manufacturer tools', href: '#manufacturer-tools' },
+  { label: 'No guaranteed outcome', href: '#no-guaranteed-outcome' },
+  { label: 'External links', href: '#external-links' },
+];
+---
+
+<ContentLayout
+  title="Disclaimer"
+  metaTitle="Disclaimer: Limits of the Troubleshooting Advice"
+  description="FixProblemNow provides general troubleshooting information only. Read the limits on physical safety, data loss, manufacturer tools and guaranteed outcomes."
+  canonical="/disclaimer/"
+  eyebrow="Important"
+  intro="The guides on this site are general troubleshooting information. They cannot account for every device, configuration, or fault, and they are not a substitute for qualified service."
+  updated="2026-11-15"
+  asideLinks={asideLinks}
+  asideNote="If a device is unsafe, stop using it. A website cannot assess physical damage remotely."
+>
+  <h2 id="general-information-only">General information only</h2>
+  <p>
+    FixProblemNow publishes educational troubleshooting content. It does not provide a diagnosis for
+    your specific device, a guarantee that a step will work, or a professional repair service. The
+    site cannot see your device, inspect its hardware, read its logs, or verify its configuration.
+    Menus, error messages, and behaviour can differ by model, region, software version, and
+    organisation policy.
+  </p>
+  <p>
+    You are responsible for deciding whether to follow a step, for backing up your data, and for
+    stopping when a procedure exceeds your comfort or experience. If you are unsure, use the
+    manufacturer’s support or a qualified technician.
+  </p>
+
+  <h2 id="physical-safety">Physical safety</h2>
+  <div class="callout callout--important">
+    <p class="callout__label">Stop for these signs</p>
+    <p>
+      Stop and disconnect power if it is safe to do so when you see smoke, sparks, a burning smell,
+      a swollen battery, a cracked or leaking battery, or liquid inside a device. Do not open a power
+      supply, microwave, or sealed battery enclosure. Contact a qualified repair service or, for
+      fire or smoke, your local emergency service.
+    </p>
+  </div>
+  <p>
+    Some guides mention opening a case, reseating components, or handling storage drives. Those
+    steps can cause electric shock, burns, or damage even when described correctly. The presence of a
+    step on this site is not a statement that it is safe for your device or your level of experience.
+  </p>
+
+  <h2 id="data-and-backups">Data and backups</h2>
+  <p>
+    Troubleshooting can erase data. Resets, reinstalls, disk repairs, partition changes, and storage
+    diagnostics may remove files or make a failing drive harder to recover. Back up important data
+    before any step that writes to storage, and keep a second copy if the data matters. A backup
+    that has never been restored is not proven; check that you can open the backed-up files.
+  </p>
+  <p>
+    If a drive is clicking, grinding, or has been physically damaged, stop using it and seek
+    specialist data recovery. Repeated repair attempts can reduce what is recoverable.
+  </p>
+
+  <h2 id="manufacturer-tools">Manufacturer tools</h2>
+  <p>
+    Guides may link to manufacturer support pages, recovery images, firmware, and diagnostic tools.
+    Those tools are controlled by the manufacturer, not by FixProblemNow. Download them only from the
+    official domain, check the supported model, and read the manufacturer’s warnings before use.
+    Unofficial firmware, modified system images, and third-party driver bundles are not recommended.
+  </p>
+
+  <h2 id="no-guaranteed-outcome">No guaranteed outcome</h2>
+  <p>
+    A guide may fail because the fault is hardware-related, because a provider service is down,
+    because an account is restricted, or because the device is running a version that behaves
+    differently. The site does not promise that a problem will be fixed, that data will be
+    recovered, or that a device will remain in warranty. No statement on the site should be read as
+    a guarantee of a particular result.
+  </p>
+
+  <h2 id="external-links">External links</h2>
+  <p>
+    Links to third-party sites are provided for reference. FixProblemNow does not control those
+    sites and is not responsible for their content, downloads, availability, or privacy practices.
+    A link does not imply endorsement. See the <a href="/terms/">terms and conditions</a> for the
+    full liability position and the <a href="/editorial-policy/">editorial policy</a> for sourcing
+    standards.
+  </p>
+</ContentLayout>

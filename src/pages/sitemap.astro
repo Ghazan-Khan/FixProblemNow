@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import { categories } from '../data/categories';
+import { getGuides, getCategoriesWithCounts } from '../lib/content';
+import { breadcrumbSchema } from '../lib/schema';
+
+const guides = await getGuides();
+const categoriesWithCounts = getCategoriesWithCounts(guides);
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Site map', href: '/sitemap/' },
+];
+
+const mainPages = [
+  { label: 'Home', href: '/' },
+  { label: 'All troubleshooting guides', href: '/problems/' },
+  { label: 'Categories', href: '/categories/' },
+  { label: 'Search', href: '/search/' },
+  { label: 'How it works', href: '/how-it-works/' },
+  { label: 'About', href: '/about/' },
+  { label: 'Contact', href: '/contact/' },
+  { label: 'Get additional help', href: '/get-help/' },
+];
+
+const policyPages = [
+  { label: 'Editorial policy', href: '/editorial-policy/' },
+  { label: 'Corrections policy', href: '/corrections-policy/' },
+  { label: 'Accessibility', href: '/accessibility/' },
+  { label: 'Privacy policy', href: '/privacy-policy/' },
+  { label: 'Terms and conditions', href: '/terms/' },
+  { label: 'Disclaimer', href: '/disclaimer/' },
+  { label: 'Affiliate disclosure', href: '/affiliate-disclosure/' },
+];
+---
+
+<BaseLayout
+  title="Site map"
+  description="A human-readable index of every FixProblemNow page, category and troubleshooting guide, plus links to the XML sitemap and policies."
+  canonical="/sitemap/"
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <header class="page-hero">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <h1>Site map</h1>
+      <p>
+        Every published page in one place. The XML version for search engines is at
+        <a href="/sitemap-index.xml">/sitemap-index.xml</a>.
+      </p>
+    </div>
+  </header>
+
+  <div class="container section">
+    <div class="sitemap-groups">
+      <section class="sitemap-group" aria-labelledby="sitemap-main">
+        <h2 id="sitemap-main">Main pages</h2>
+        <ul>
+          {mainPages.map((page) => (
+            <li><a href={page.href}>{page.label}</a></li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="sitemap-group" aria-labelledby="sitemap-policies">
+        <h2 id="sitemap-policies">Policies and standards</h2>
+        <ul>
+          {policyPages.map((page) => (
+            <li><a href={page.href}>{page.label}</a></li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <div class="section-head" style="margin-top:2.5rem">
+      <p class="eyebrow">Full library</p>
+      <h2>Categories and guides</h2>
+      <p>{guides.length} guides across {categoriesWithCounts.filter((category) => category.count > 0).length} categories.</p>
+    </div>
+
+    <div class="sitemap-groups">
+      {categories.map((category) => {
+        const categoryGuides = guides.filter((guide) => guide.data.category === category.slug);
+        return (
+          <section class="sitemap-group" aria-labelledby={`sitemap-${category.slug}`}>
+            <h2 id={`sitemap-${category.slug}`}>
+              <a href={`/${category.slug}/`}>{category.name}</a>
+            </h2>
+            {categoryGuides.length > 0 ? (
+              <ul>
+                {categoryGuides.map((guide) => (
+                  <li><a href={`/${guide.data.category}/${guide.id}/`}>{guide.data.title}</a></li>
+                ))}
+              </ul>
+            ) : (
+              <p class="small muted">Guides in progress.</p>
+            )}
+          </section>
+        );
+      })}
+    </div>
+
+    <div class="help-band" style="margin-top:2.5rem">
+      <div>
+        <h2>Looking for something specific?</h2>
+        <p>
+          Use search with the symptom or error message you can see, or browse the category that
+          matches the device.
+        </p>
+      </div>
+      <div class="help-band__actions">
+        <a class="btn btn--primary" href="/search/">
+          <Icon name="search" size={16} />
+          Search the library
+        </a>
+        <a class="btn btn--outline" href="/categories/">Browse categories</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import Icon from '../components/Icon.astro';
+import SearchBox from '../components/SearchBox.astro';
+import { getGuides, getCategoriesWithCounts } from '../lib/content';
+import { breadcrumbSchema, collectionPageSchema } from '../lib/schema';
+
+const guides = await getGuides();
+const allCategories = getCategoriesWithCounts(guides);
+const ordered = [...allCategories].sort((a, b) => Number(b.count) - Number(a.count));
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Categories', href: '/categories/' },
+];
+
+const schemas = [
+  breadcrumbSchema(crumbs),
+  collectionPageSchema(
+    'Technology problem categories',
+    'Browse troubleshooting categories for computers, phones, Wi-Fi, printers, software, accounts and other technology.',
+    '/categories/',
+    allCategories.map((category) => ({ title: category.name, href: `/${category.slug}/` })),
+  ),
+];
+---
+
+<BaseLayout
+  title="Browse Technology Problem Categories"
+  description="Browse 18 troubleshooting categories covering computers, Windows, Mac, phones, Wi-Fi, routers, printers, email, software, TVs and more."
+  canonical="/categories/"
+  jsonLd={schemas}
+>
+  <header class="page-hero">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <h1>Browse by device or problem</h1>
+      <p>
+        Every guide belongs to one of 18 categories. Choose the area that matches your device or the
+        type of failure, or search if you are not sure where a problem fits.
+      </p>
+    </div>
+  </header>
+
+  <div class="container section">
+    <div class="grid grid--4">
+      {ordered.map((category) => <CategoryCard category={category} />)}
+    </div>
+
+    <div class="section-head section-head--center" style="margin-top:2.75rem">
+      <p class="eyebrow">Not sure where to start?</p>
+      <h2>Search with the words you can see</h2>
+      <p>Use the device name, the symptom, or the exact wording of an error message.</p>
+    </div>
+    <div style="max-width:760px;margin-inline:auto">
+      <SearchBox id="categories-search" showExamples={false} />
+    </div>
+  </div>
+
+  <section class="section section--tint" aria-labelledby="category-notes-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How categories work</p>
+        <h2 id="category-notes-heading">One problem, one primary home</h2>
+      </div>
+      <div class="feature-grid">
+        <div class="feature">
+          <span class="feature__icon"><Icon name="grid" size={19} /></span>
+          <h3>Device-first where it helps</h3>
+          <p>
+            A problem that only affects iPhones lives in the iPhone category, while a charging issue
+            that applies to most phones sits in the general phone category.
+          </p>
+        </div>
+        <div class="feature">
+          <span class="feature__icon"><Icon name="search" size={19} /></span>
+          <h3>Search crosses categories</h3>
+          <p>
+            Search looks at every published guide, so you do not need to know the category. Related
+            links connect overlapping areas such as Wi-Fi and routers.
+          </p>
+        </div>
+        <div class="feature">
+          <span class="feature__icon"><Icon name="shield" size={19} /></span>
+          <h3>Safety notes travel with the guide</h3>
+          <p>
+            Risk level, preparation, and when-to-stop guidance are part of the guide itself, not a
+            general warning hidden elsewhere on the site.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,37 @@
+---
+import { categories } from '../data/categories';
+import type { Guide } from '../lib/content';
+import { formatDate, guideUrl, readingTime } from '../lib/content';
+import Icon from './Icon.astro';
+
+interface Props {
+  guide: Guide;
+  showCategory?: boolean;
+}
+
+const { guide, showCategory = true } = Astro.props;
+const category = categories.find((item) => item.slug === guide.data.category)!;
+---
+
+<article class="card guide-card">
+  <div class="guide-card__top">
+    <span class="guide-card__icon">
+      <Icon name={category.icon} size={19} />
+    </span>
+    {showCategory && <span class="guide-card__cat">{category.name}</span>}
+  </div>
+  <h3 class="guide-card__title">
+    <a href={guideUrl(guide)}>{guide.data.title}</a>
+  </h3>
+  <p class="guide-card__desc">{guide.data.summary}</p>
+  <div class="guide-card__meta">
+    <span>
+      <Icon name="clock" size={13} />
+      {readingTime(guide.body)} min read
+    </span>
+    <span>
+      <Icon name="refresh" size={13} />
+      Updated {formatDate(guide.data.updated)}
+    </span>
+  </div>
+</article>

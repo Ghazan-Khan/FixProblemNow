@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SearchBox from '../components/SearchBox.astro';
+import GuideCard from '../components/GuideCard.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import Faq from '../components/Faq.astro';
+import Icon from '../components/Icon.astro';
+import { getCategoriesWithCounts, getGuides, formatDate } from '../lib/content';
+import { faqSchema } from '../lib/schema';
+import { homeFaqs, site } from '../data/site';
+
+const guides = await getGuides();
+const categories = getCategoriesWithCounts(guides);
+const featured = guides.filter((guide) => guide.data.featured).slice(0, 6);
+const popular = featured.length >= 3 ? featured : guides.slice(0, 6);
+const recent = guides.slice(0, 3);
+const totalGuides = guides.length;
+
+const howSteps = [
+  {
+    title: 'Describe the problem',
+    text: 'Search with the symptom, device name, or the exact error message on screen.',
+  },
+  {
+    title: 'Find the closest guide',
+    text: 'Results are ranked by title, category, keywords, and the wording people actually use.',
+  },
+  {
+    title: 'Work from simple to advanced',
+    text: 'Start with reversible checks, then move to resets and repairs with clear warnings.',
+  },
+  {
+    title: 'Verify or get help',
+    text: 'Use the verification steps to confirm the fix, or find out when to stop and seek service.',
+  },
+];
+
+const features = [
+  {
+    icon: 'search',
+    title: 'Search by symptom or error',
+    text: 'Search understands device names, common wording, and visible error messages, not just exact titles.',
+  },
+  {
+    icon: 'grid',
+    title: 'Browse by device and system',
+    text: 'Eighteen categories separate computer, Windows, Mac, phone, network, printer, and account problems.',
+  },
+  {
+    icon: 'book',
+    title: 'Beginner-first instructions',
+    text: 'Steps are ordered from low-risk checks to advanced repairs, with the expected result explained.',
+  },
+  {
+    icon: 'shield',
+    title: 'Safety and data warnings',
+    text: 'Destructive resets, backups, battery risks, and steps that need a technician are labelled before you start.',
+  },
+  {
+    icon: 'check',
+    title: 'Verification steps',
+    text: 'Every guide explains how to confirm the problem is actually resolved rather than temporarily hidden.',
+  },
+  {
+    icon: 'arrow-right',
+    title: 'Related next steps',
+    text: 'If the first fix fails, linked guides cover adjacent causes without sending you back to a search engine.',
+  },
+];
+
+const pageSchema = faqSchema(homeFaqs);
+---
+
+<BaseLayout
+  title="FixProblemNow: Practical Tech Troubleshooting Guides"
+  description={site.description}
+  canonical="/"
+  jsonLd={pageSchema}
+>
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow eyebrow--light">
+          <Icon name="wrench" size={14} />
+          Independent troubleshooting library
+        </p>
+        <h1>Find Solutions to Your Tech Problems</h1>
+        <p class="hero__lead">
+          Practical, step-by-step help for computers, phones, Wi-Fi, printers, software,
+          smart TVs, and the other devices you rely on every day. Start with the safest
+          checks, then move to deeper fixes only when you need them.
+        </p>
+
+        <SearchBox id="hero-search" />
+
+        <ul class="hero__trust">
+          <li><Icon name="check" size={15} /> {totalGuides} published guides</li>
+          <li><Icon name="check" size={15} /> 18 problem categories</li>
+          <li><Icon name="check" size={15} /> No account needed</li>
+        </ul>
+      </div>
+
+      <div class="hero__visual">
+        <div class="console" aria-hidden="true">
+          <div class="console__top">
+            <span class="console__label">
+              <Icon name="monitor" size={14} />
+              Connection check
+            </span>
+            <span class="console__dots"><span></span><span></span><span></span></span>
+          </div>
+          <div class="console__device">
+            <div class="console__screen">
+              <Icon name="laptop" size={34} />
+            </div>
+            <div class="console__device-text">
+              <strong>Home network</strong>
+              <span>Wi-Fi connected · device online</span>
+            </div>
+          </div>
+          <ul class="status-list">
+            <li>
+              <span>Wi-Fi signal</span>
+              <span class="status status--ok">Connected</span>
+            </li>
+            <li>
+              <span>Internet access</span>
+              <span class="status status--bad">No response</span>
+            </li>
+            <li>
+              <span>DNS lookup</span>
+              <span class="status status--warn">Timed out</span>
+            </li>
+          </ul>
+          <div class="console__fix">
+            <Icon name="check" size={18} />
+            <div>
+              <strong>Next step: restart the router and modem</strong>
+              <span>Then re-test a second device before changing DNS.</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero__float">
+          <Icon name="shield" size={16} />
+          Safety-first troubleshooting
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="popular-heading">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">Start here</p>
+          <h2 id="popular-heading">Popular problems</h2>
+          <p>Guides for the failures people search for most often.</p>
+        </div>
+        <a class="link-more" href="/problems/">
+          All troubleshooting guides
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+      <div class="cards-grid">
+        {popular.map((guide) => <GuideCard guide={guide} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint" aria-labelledby="categories-heading">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">Browse the library</p>
+          <h2 id="categories-heading">What are you trying to fix?</h2>
+          <p>Choose the device, operating system, or type of problem.</p>
+        </div>
+        <a class="link-more" href="/categories/">
+          All categories
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+      <div class="grid grid--4">
+        {categories.map((category) => <CategoryCard category={category} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-heading">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-heading">From symptom to a tested next step</h2>
+        <p>
+          No remote access, no account, and no magic diagnosis. Just a clear process
+          you can follow at your own pace.
+        </p>
+      </div>
+      <div class="how-steps">
+        {howSteps.map((step, index) => (
+          <div class="how-step">
+            <span class="how-step__num" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint" aria-labelledby="recent-heading">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow">Fresh from the library</p>
+          <h2 id="recent-heading">Recently published and updated</h2>
+          <p>Every date below comes from the guide's own publication metadata.</p>
+        </div>
+        <a class="link-more" href="/problems/">
+          See the full library
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+      <div class="cards-grid">
+        {recent.map((guide) => <GuideCard guide={guide} />)}
+      </div>
+      <p class="small muted" style="margin-top:1.1rem;margin-bottom:0">
+        Most recent update: {formatDate(guides[0]?.data.updated ?? new Date())}
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="features-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Built for real troubleshooting</p>
+        <h2 id="features-heading">Helpful features, not padding</h2>
+        <p>These are the things the site actually does, not promises about instant repair.</p>
+      </div>
+      <div class="feature-grid">
+        {features.map((feature) => (
+          <div class="feature">
+            <span class="feature__icon"><Icon name={feature.icon} size={19} /></span>
+            <h3>{feature.title}</h3>
+            <p>{feature.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint" aria-labelledby="faq-heading">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Common questions</p>
+        <h2 id="faq-heading">Before you start troubleshooting</h2>
+      </div>
+      <Faq items={homeFaqs} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="assistance-heading">
+    <div class="container">
+      <div class="help-band">
+        <div>
+          <p class="eyebrow">If the guide is not enough</p>
+          <h2 id="assistance-heading">Know when to stop and get help</h2>
+          <p>
+            Some faults need hands-on diagnosis, a replacement part, or access to an
+            account recovery process that only the provider can complete. We will tell
+            you when that is the case instead of pushing another reset.
+          </p>
+        </div>
+        <div class="help-band__actions">
+          <a class="btn btn--primary" href="/get-help/">
+            <Icon name="book" size={16} />
+            See your support options
+          </a>
+          <a class="btn btn--outline" href="/contact/">
+            <Icon name="mail" size={16} />
+            Send us the details
+          </a>
+          <p class="help-band__note">
+            FixProblemNow is independent and not an official manufacturer support
+            service. We do not remotely access devices, and we cannot recover accounts.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

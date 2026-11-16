@@ -1,0 +1,251 @@
+---
+import Icon from './Icon.astro';
+import { searchExamples } from '../data/site';
+
+interface Props {
+  id?: string;
+  placeholder?: string;
+  showExamples?: boolean;
+  label?: string;
+  value?: string;
+}
+
+const {
+  id = 'problem-search',
+  placeholder = 'Describe your problem or enter an error message...',
+  showExamples = true,
+  label = 'Search troubleshooting guides',
+  value = '',
+} = Astro.props;
+
+const listboxId = `${id}-suggestions`;
+---
+
+<div class="search-panel">
+  <form
+    class="search-form"
+    role="search"
+    action="/search/"
+    method="get"
+    data-search-autocomplete
+  >
+    <label class="visually-hidden" for={id}>{label}</label>
+    <div class="search-field">
+      <Icon name="search" size={20} />
+      <input
+        class="search-input"
+        id={id}
+        name="q"
+        type="search"
+        value={value}
+        placeholder={placeholder}
+        autocomplete="off"
+        spellcheck="false"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded="false"
+        aria-controls={listboxId}
+        aria-describedby={`${id}-help`}
+        data-search-input
+      />
+      <button class="btn btn--primary search-submit" type="submit">
+        Search
+        <Icon name="arrow-right" size={16} />
+      </button>
+    </div>
+    <div class="suggestions" data-suggestions hidden>
+      <div class="suggestions__label">Suggested guides</div>
+      <div id={listboxId} role="listbox" aria-label="Suggested troubleshooting guides" data-listbox></div>
+      <a class="suggestion__more" href="/search/" data-more>View all search results</a>
+    </div>
+    <p class="visually-hidden" id={`${id}-help`}>
+      Search matches guide titles, common symptoms, device names and error wording.
+      Use the up and down arrow keys to review suggestions.
+    </p>
+    <p class="visually-hidden" aria-live="polite" data-search-status></p>
+  </form>
+
+  {showExamples && (
+    <div class="search-examples">
+      <span class="search-examples__label">Try a common problem</span>
+      <div class="example-chips">
+        {searchExamples.map((example) => (
+          <a class="example-chip" href={`/search/?q=${encodeURIComponent(example)}`}>{example}</a>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
+<script>
+  import { searchDocs, type SearchDoc } from '../lib/search';
+
+  const forms = document.querySelectorAll<HTMLFormElement>('[data-search-autocomplete]');
+
+  if (forms.length > 0) {
+    let docsPromise: Promise<SearchDoc[]> | null = null;
+
+    const loadDocs = (): Promise<SearchDoc[]> => {
+      if (!docsPromise) {
+        docsPromise = fetch('/search-index.json', {
+          headers: { Accept: 'application/json' },
+        })
+          .then((response) => (response.ok ? (response.json() as Promise<SearchDoc[]>) : []))
+          .catch(() => []);
+      }
+      return docsPromise;
+    };
+
+    forms.forEach((form) => {
+      const input = form.querySelector<HTMLInputElement>('[data-search-input]');
+      const panel = form.querySelector<HTMLElement>('[data-suggestions]');
+      const listbox = form.querySelector<HTMLElement>('[data-listbox]');
+      const more = form.querySelector<HTMLAnchorElement>('[data-more]');
+      const status = form.querySelector<HTMLElement>('[data-search-status]');
+      if (!input || !panel || !listbox) return;
+
+      let docs: SearchDoc[] = [];
+      let items: HTMLAnchorElement[] = [];
+      let activeIndex = -1;
+      let timer: number | undefined;
+      let loaded = false;
+
+      const setExpanded = (expanded: boolean) => {
+        input.setAttribute('aria-expanded', String(expanded));
+        panel.hidden = !expanded;
+        if (!expanded) {
+          input.removeAttribute('aria-activedescendant');
+          activeIndex = -1;
+          items.forEach((item) => item.setAttribute('aria-selected', 'false'));
+        }
+      };
+
+      const select = (index: number) => {
+        if (index < 0 || index >= items.length) return;
+        activeIndex = index;
+        items.forEach((item, itemIndex) => {
+          const selected = itemIndex === index;
+          item.setAttribute('aria-selected', String(selected));
+          if (selected) {
+            input.setAttribute('aria-activedescendant', item.id);
+            item.scrollIntoView({ block: 'nearest' });
+          }
+        });
+      };
+
+      const render = (query: string) => {
+        const trimmed = query.trim();
+        listbox.replaceChildren();
+        items = [];
+        activeIndex = -1;
+        input.removeAttribute('aria-activedescendant');
+
+        if (trimmed.length < 2) {
+          setExpanded(false);
+          if (status) status.textContent = '';
+          return;
+        }
+
+        const results = searchDocs(docs, trimmed).slice(0, 6);
+        more?.setAttribute('href', `/search/?q=${encodeURIComponent(trimmed)}`);
+
+        const fragment = document.createDocumentFragment();
+        results.forEach((result, index) => {
+          const link = document.createElement('a');
+          link.className = 'suggestion';
+          link.href = result.doc.url;
+          link.id = `${input.id}-option-${index}`;
+          link.setAttribute('role', 'option');
+          link.setAttribute('aria-selected', 'false');
+
+          const text = document.createElement('span');
+          text.className = 'suggestion__text';
+
+          const title = document.createElement('span');
+          title.className = 'suggestion__title';
+          title.textContent = result.doc.title;
+
+          const meta = document.createElement('span');
+          meta.className = 'suggestion__meta';
+          meta.textContent = result.doc.categoryName;
+
+          text.append(title, meta);
+          link.append(text);
+          fragment.append(link);
+          items.push(link);
+        });
+
+        if (results.length === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'suggestion__meta';
+          empty.style.padding = '0.55rem 0.6rem';
+          empty.textContent = 'No direct guide match. Use search to see all results or browse a category.';
+          listbox.append(empty);
+        } else {
+          listbox.append(fragment);
+        }
+
+        setExpanded(true);
+        if (status) {
+          status.textContent =
+            results.length === 0
+              ? 'No guide suggestions. Press Enter to search all guides.'
+              : `${results.length} guide suggestion${results.length === 1 ? '' : 's'} available.`;
+        }
+      };
+
+      const ensureLoaded = () => {
+        if (loaded) return;
+        loadDocs().then((value) => {
+          docs = value;
+          loaded = true;
+          if (input.value.trim().length >= 2) render(input.value);
+        });
+      };
+
+      input.addEventListener('focus', () => {
+        ensureLoaded();
+        if (input.value.trim().length >= 2) render(input.value);
+      });
+
+      input.addEventListener('input', () => {
+        ensureLoaded();
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => render(input.value), 110);
+      });
+
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown') {
+          if (!panel.hidden && items.length > 0) {
+            event.preventDefault();
+            select((activeIndex + 1) % items.length);
+          }
+        } else if (event.key === 'ArrowUp') {
+          if (!panel.hidden && items.length > 0) {
+            event.preventDefault();
+            select(activeIndex <= 0 ? items.length - 1 : activeIndex - 1);
+          }
+        } else if (event.key === 'Enter') {
+          if (!panel.hidden && activeIndex >= 0 && items[activeIndex]) {
+            event.preventDefault();
+            items[activeIndex].click();
+          }
+        } else if (event.key === 'Escape') {
+          if (!panel.hidden) {
+            event.preventDefault();
+            setExpanded(false);
+            if (status) status.textContent = '';
+          }
+        } else if (event.key === 'Tab') {
+          setExpanded(false);
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!form.contains(event.target as Node)) {
+          setExpanded(false);
+        }
+      });
+    });
+  }
+</script>

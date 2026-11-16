@@ -1,0 +1,96 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import { site } from '../data/site';
+
+const asideLinks = [
+  { label: 'Why this site exists', href: '#why-this-site-exists' },
+  { label: 'Independence', href: '#independence' },
+  { label: 'How content is maintained', href: '#how-content-is-maintained' },
+  { label: 'How the site is funded', href: '#how-the-site-is-funded' },
+  { label: 'Contact', href: '#contact' },
+];
+---
+
+<ContentLayout
+  title="About FixProblemNow"
+  metaTitle="About FixProblemNow: Independent Tech Help"
+  description="FixProblemNow is an independent troubleshooting library. Learn what the site covers, how it stays independent, and how to report a problem with a guide."
+  canonical="/about/"
+  eyebrow="About"
+  intro="FixProblemNow is an independent reference site for everyday technology problems. It exists to give clear, safety-aware steps without remote access, accounts, or manufactured urgency."
+  asideLinks={asideLinks}
+  asideNote="The site is not affiliated with any manufacturer, software vendor, or repair company."
+>
+  <h2 id="why-this-site-exists">Why this site exists</h2>
+  <p>
+    Technology help is often scattered across forum threads, video tutorials, and support pages
+    that assume you already know the right terms. A search for a simple symptom can return a dozen
+    contradictory fixes, several download links of unknown origin, and advice that starts with a
+    factory reset. That is a poor starting point when the device holds work, photos, messages, or
+    account access.
+  </p>
+  <p>
+    {site.name} takes a different approach. Each guide starts from a symptom you can actually see,
+    explains the likely causes in plain language, and orders the checks from least to most
+    disruptive. Risk, preparation, verification, and a stopping point are part of the page rather
+    than an afterthought. Where a manufacturer’s own tool is required, the guide sends you to the
+    manufacturer instead of offering an unofficial substitute.
+  </p>
+
+  <h2 id="independence">Independence</h2>
+  <p>
+    {site.name} is not affiliated with Microsoft, Apple, Google, Samsung, Dell, HP, Lenovo, Canon,
+    Epson, Brother, Amazon, Roku, or any other device maker, software vendor, internet provider, or
+    repair service. Brand and product names are used only to describe compatibility, menus, or
+    official support paths.
+  </p>
+  <p>
+    The site does not provide remote support, sell repairs, sell parts, or act as an intermediary
+    for account recovery. There is no account system, no device scan, and no “live technician”
+    chat. If another site claims to be us while asking for remote access or payment, it is not
+    connected to this project.
+  </p>
+
+  <h2 id="how-content-is-maintained">How content is maintained</h2>
+  <p>
+    Guides are written for this site and checked against current official documentation before
+    publication. The process is described in the <a href="/how-it-works/">how it works page</a> and
+    the <a href="/editorial-policy/">editorial policy</a>. Publication and update dates come from
+    the article metadata. We do not use invented author biographies, customer testimonials, search
+    volume figures, or success rates.
+  </p>
+  <p>
+    Software menus and device settings change. When a guide is reported as outdated, it is checked
+    and either corrected or marked for revision. The
+    <a href="/corrections-policy/">corrections policy</a> explains what information helps and what
+    happens next. We cannot guarantee a reply time, and we cannot diagnose an individual device by
+    email.
+  </p>
+
+  <h2 id="how-the-site-is-funded">How the site is funded</h2>
+  <p>
+    At the time of publication, this site carries no advertising, sponsored placements, or
+    affiliate links. If that changes, the change will be disclosed on the
+    <a href="/affiliate-disclosure/">affiliate disclosure page</a> and in the affected content
+    before any link is used. Product recommendations are not currently a source of revenue.
+  </p>
+  <p>
+    The site does not sell visitor data. Contact messages are used to answer or investigate the
+    message, and anonymous guide feedback is used to prioritise updates. The
+    <a href="/privacy-policy/">privacy policy</a> sets out the details, including the third-party
+    services that may be used to deliver a contact message.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Use the <a href="/contact/">contact page</a> for corrections, accessibility problems, privacy
+    questions, or feedback on a guide. Include the guide URL and the device or software version
+    where relevant. For a device that will not start, the fastest route is usually the matching
+    guide rather than a message, because the guide can walk you through the checks in order.
+  </p>
+  <p>
+    If you need manufacturer support, a repair shop, data recovery, or account recovery, the
+    <a href="/get-help/">get help page</a> lists the types of support available and the information
+    to prepare before you contact them.
+  </p>
+</ContentLayout>

@@ -1,0 +1,200 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import GuideCard from '../components/GuideCard.astro';
+import Icon from '../components/Icon.astro';
+import { getGuides, getCategoriesWithCounts } from '../lib/content';
+import { breadcrumbSchema, collectionPageSchema } from '../lib/schema';
+
+const guides = await getGuides();
+const categoriesWithCounts = getCategoriesWithCounts(guides).filter((category) => category.count > 0);
+const total = guides.length;
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'All problems', href: '/problems/' },
+];
+
+const schemas = [
+  breadcrumbSchema(crumbs),
+  collectionPageSchema(
+    'All troubleshooting guides',
+    'Browse every FixProblemNow troubleshooting guide by device, operating system and problem type.',
+    '/problems/',
+    guides.map((guide) => ({
+      title: guide.data.title,
+      href: `/${guide.data.category}/${guide.id}/`,
+    })),
+  ),
+];
+---
+
+<BaseLayout
+  title="All Troubleshooting Guides"
+  description="Browse every FixProblemNow troubleshooting guide by device, operating system and problem type. Search or filter the full library."
+  canonical="/problems/"
+  jsonLd={schemas}
+>
+  <header class="page-hero">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <h1>All troubleshooting guides</h1>
+      <p>
+        {total} published guides across {categoriesWithCounts.length} problem areas. Filter the
+        library below, or search by the exact symptom or error message you can see.
+      </p>
+    </div>
+  </header>
+
+  <div class="container section">
+    <div class="library-toolbar" data-library-toolbar>
+      <div class="search-bar" style="max-width:560px">
+        <div class="search-bar__input">
+          <Icon name="search" size={19} />
+          <label class="visually-hidden" for="guide-filter">Filter guides by title or keyword</label>
+          <input
+            id="guide-filter"
+            type="search"
+            placeholder="Filter by device, symptom or keyword..."
+            autocomplete="off"
+            data-guide-filter
+          />
+        </div>
+      </div>
+      <div class="filter-chips" role="group" aria-label="Filter by category">
+        <button class="filter-chip" type="button" aria-pressed="true" data-category-filter="">
+          All guides <span data-count-for="">({total})</span>
+        </button>
+        {categoriesWithCounts.map((category) => (
+          <button
+            class="filter-chip"
+            type="button"
+            aria-pressed="false"
+            data-category-filter={category.slug}
+          >
+            {category.name} <span data-count-for={category.slug}>({category.count})</span>
+          </button>
+        ))}
+      </div>
+      <p class="library-toolbar__status" aria-live="polite" data-library-status>
+        Showing all {total} guides.
+      </p>
+    </div>
+
+    <div data-library-sections>
+      {categoriesWithCounts.map((category) => {
+        const categoryGuides = guides.filter((guide) => guide.data.category === category.slug);
+        return (
+          <section
+            class="category-block"
+            data-library-section
+            data-category={category.slug}
+            aria-labelledby={`block-${category.slug}`}
+          >
+            <div class="category-block__head">
+              <h2 class="category-block__title" id={`block-${category.slug}`}>
+                <Icon name={category.icon} size={20} />
+                <a href={`/${category.slug}/`}>{category.name}</a>
+              </h2>
+              <span class="small muted">
+                {categoryGuides.length} {categoryGuides.length === 1 ? 'guide' : 'guides'}
+              </span>
+            </div>
+            <div class="cards-grid">
+              {categoryGuides.map((guide) => (
+                <div
+                  class="library-item"
+                  data-library-item
+                  data-category={guide.data.category}
+                  data-search={`${guide.data.title} ${guide.data.summary} ${guide.data.keywords.join(' ')}`.toLowerCase()}
+                >
+                  <GuideCard guide={guide} showCategory={false} />
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+
+    <div class="empty-state" data-library-empty hidden>
+      <span class="empty-state__icon"><Icon name="search" size={24} /></span>
+      <h2>No guides match that filter</h2>
+      <p>
+        Try a shorter phrase, a device name, or a word from the error message. You can also browse
+        all categories or use the full search page.
+      </p>
+      <div class="example-links">
+        <button type="button" data-reset-library>Clear filters</button>
+        <a href="/search/">Search all guides</a>
+        <a href="/categories/">Browse categories</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const toolbar = document.querySelector<HTMLElement>('[data-library-toolbar]');
+  if (toolbar) {
+    const input = toolbar.querySelector<HTMLInputElement>('[data-guide-filter]');
+    const chips = [...toolbar.querySelectorAll<HTMLButtonElement>('[data-category-filter]')];
+    const status = document.querySelector<HTMLElement>('[data-library-status]');
+    const sections = [...document.querySelectorAll<HTMLElement>('[data-library-section]')];
+    const items = [...document.querySelectorAll<HTMLElement>('[data-library-item]')];
+    const empty = document.querySelector<HTMLElement>('[data-library-empty]');
+    let activeCategory = '';
+
+    const update = () => {
+      const query = (input?.value ?? '').trim().toLowerCase();
+      let visible = 0;
+
+      items.forEach((item) => {
+        const categoryMatch = !activeCategory || item.dataset.category === activeCategory;
+        const textMatch = !query || (item.dataset.search ?? '').includes(query);
+        const show = categoryMatch && textMatch;
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      sections.forEach((section) => {
+        const hasVisible = [...section.querySelectorAll<HTMLElement>('[data-library-item]')].some(
+          (item) => !item.hidden,
+        );
+        section.hidden = !hasVisible;
+      });
+
+      chips.forEach((chip) => {
+        chip.setAttribute(
+          'aria-pressed',
+          String((chip.dataset.categoryFilter ?? '') === activeCategory),
+        );
+      });
+
+      if (empty) empty.hidden = visible !== 0;
+
+      if (status) {
+        if (visible === items.length) {
+          status.textContent = `Showing all ${items.length} guides.`;
+        } else {
+          status.textContent = `${visible} of ${items.length} guides match the current filter.`;
+        }
+      }
+    };
+
+    input?.addEventListener('input', update);
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        activeCategory = chip.dataset.categoryFilter ?? '';
+        update();
+      });
+    });
+    document.querySelector('[data-reset-library]')?.addEventListener('click', () => {
+      activeCategory = '';
+      if (input) input.value = '';
+      update();
+      input?.focus();
+    });
+
+    update();
+  }
+</script>

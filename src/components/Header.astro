@@ -1,0 +1,182 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { categories } from '../data/categories';
+import { mainNav } from '../data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="site-header" data-site-header>
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="FixProblemNow home">
+      <Logo />
+      <span class="brand__text">
+        <span class="brand__name">Fix<em>Problem</em>Now</span>
+        <span class="brand__tag">Independent tech help</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <details class="nav-menu" data-menu>
+        <summary class="nav-link">
+          Categories
+          <Icon name="chevron-down" size={14} />
+        </summary>
+        <div class="mega">
+          <div class="mega__head">
+            <p>Browse by device or issue</p>
+            <a href="/categories/">All categories</a>
+          </div>
+          <div class="mega__grid">
+            {categories.map((category) => (
+              <a class="mega__link" href={`/${category.slug}/`}>
+                <Icon name={category.icon} size={17} />
+                {category.name}
+              </a>
+            ))}
+          </div>
+          <div class="mega__foot">
+            <a href="/problems/">All troubleshooting guides</a>
+            <a href="/sitemap/">Site map</a>
+          </div>
+        </div>
+      </details>
+
+      {mainNav.map((item) => (
+        <a
+          class="nav-link"
+          href={item.href}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <a class="header-search" href="/search/" aria-label="Search">
+        <Icon name="search" size={16} />
+        <span>Search</span>
+      </a>
+      <a class="btn btn--primary btn--sm" href="/search/">
+        <Icon name="wrench" size={15} />
+        <span>Find a Fix</span>
+      </a>
+    </div>
+
+    <details class="mobile-menu" data-mobile-menu>
+      <summary aria-label="Open navigation menu">
+        <Icon name="menu" size={22} class="icon-menu" />
+        <Icon name="close" size={22} class="icon-close" />
+      </summary>
+      <div class="mobile-panel">
+        <nav aria-label="Mobile">
+          <a class="nav-link" href="/problems/" aria-current={isActive('/problems/') ? 'page' : undefined}>
+            All problems
+          </a>
+          <a class="nav-link" href="/categories/" aria-current={isActive('/categories/') ? 'page' : undefined}>
+            All categories
+          </a>
+          {mainNav.map((item) => (
+            <a
+              class="nav-link"
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <details class="mobile-cats">
+          <summary>
+            Browse categories
+            <Icon name="chevron-down" size={17} />
+          </summary>
+          <div class="mobile-cats__list">
+            {categories.map((category) => (
+              <a href={`/${category.slug}/`}>
+                <Icon name={category.icon} size={17} />
+                {category.name}
+              </a>
+            ))}
+          </div>
+        </details>
+
+        <div class="mobile-panel__actions">
+          <a class="btn btn--primary btn--block" href="/search/">
+            <Icon name="search" size={17} />
+            Find a Fix
+          </a>
+          <a class="btn btn--outline btn--block" href="/contact/">
+            <Icon name="mail" size={17} />
+            Contact us
+          </a>
+        </div>
+      </div>
+    </details>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  if (header) {
+    const menus = header.querySelectorAll<HTMLDetailsElement>('details[data-menu]');
+    const mobile = header.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
+
+    const closeMenus = (except?: HTMLDetailsElement) => {
+      menus.forEach((menu) => {
+        if (menu !== except) menu.open = false;
+      });
+    };
+
+    menus.forEach((menu) => {
+      menu.addEventListener('toggle', () => {
+        if (menu.open) closeMenus(menu);
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target as Node;
+      if (!header.contains(target)) {
+        closeMenus();
+      }
+      if (target instanceof Element && target.closest('a') && mobile?.open) {
+        mobile.open = false;
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      let closed = false;
+      menus.forEach((menu) => {
+        if (menu.open) {
+          menu.open = false;
+          menu.querySelector('summary')?.focus();
+          closed = true;
+        }
+      });
+      if (mobile?.open) {
+        mobile.open = false;
+        mobile.querySelector('summary')?.focus();
+        closed = true;
+      }
+      if (closed) event.stopPropagation();
+    });
+
+    if (mobile) {
+      const syncScroll = () => {
+        document.body.classList.toggle('menu-open', mobile.open);
+      };
+      mobile.addEventListener('toggle', syncScroll);
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 1100 && mobile.open) {
+          mobile.open = false;
+          syncScroll();
+        }
+      });
+    }
+  }
+</script>

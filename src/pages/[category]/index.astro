@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import CategoryCard from '../../components/CategoryCard.astro';
+import Faq from '../../components/Faq.astro';
+import SearchBox from '../../components/SearchBox.astro';
+import Icon from '../../components/Icon.astro';
+import { categories, getCategory } from '../../data/categories';
+import { getGuides, formatDate } from '../../lib/content';
+import { breadcrumbSchema, collectionPageSchema, faqSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const guides = await getGuides();
+  return categories.map((category) => ({
+    params: { category: category.slug },
+    props: {
+      category,
+      guides: guides.filter((guide) => guide.data.category === category.slug),
+    },
+  }));
+}
+
+const { category, guides } = Astro.props;
+const allGuides = await getGuides();
+const relatedCategories = category.related.map((slug) => {
+  const related = getCategory(slug);
+  const count = allGuides.filter((guide) => guide.data.category === slug).length;
+  return { ...related, count };
+});
+
+const lastUpdated = guides.reduce<Date | null>(
+  (latest, guide) => (!latest || guide.data.updated > latest ? guide.data.updated : latest),
+  null,
+);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Categories', href: '/categories/' },
+  { label: category.name, href: `/${category.slug}/` },
+];
+
+const schemas = [
+  breadcrumbSchema(crumbs),
+  collectionPageSchema(
+    `${category.name} troubleshooting guides`,
+    category.metaDescription,
+    `/${category.slug}/`,
+    guides.map((guide) => ({ title: guide.data.title, href: `/${guide.data.category}/${guide.id}/` })),
+  ),
+  faqSchema(category.faqs),
+];
+---
+
+<BaseLayout
+  title={`${category.name}: Troubleshooting Guides`}
+  description={category.metaDescription}
+  canonical={`/${category.slug}/`}
+  jsonLd={schemas}
+  image={`/og/${category.slug}.png`}
+>
+  <header class="category-hero">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <div class="category-hero__grid">
+        <div>
+          <h1>
+            <Icon name={category.icon} size={32} />
+            {category.name}
+          </h1>
+          <div class="category-hero__intro">
+            {category.intro.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+          <div class="category-stats">
+            <span>
+              <Icon name="book" size={15} />
+              {guides.length} {guides.length === 1 ? 'guide' : 'guides'}
+            </span>
+            {lastUpdated && (
+              <span>
+                <Icon name="refresh" size={15} />
+                Last updated {formatDate(lastUpdated)}
+              </span>
+            )}
+            <span>
+              <Icon name="shield" size={15} />
+              Safety-first instructions
+            </span>
+          </div>
+        </div>
+
+        <aside class="category-aside" aria-label="Category overview">
+          <h2>What this section covers</h2>
+          <ul class="tag-list">
+            {category.covers.map((item) => <li class="tag">{item}</li>)}
+          </ul>
+          <h2 style="margin-top:1.2rem">Related categories</h2>
+          <ul class="tag-list">
+            {relatedCategories.map((related) => (
+              <li>
+                <a class="tag" href={`/${related.slug}/`}>{related.name}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <div class="container section">
+    <div class="section-head section-head--row">
+      <div>
+        <p class="eyebrow">Troubleshooting library</p>
+        <h2>Guides for {category.name.toLowerCase()}</h2>
+      </div>
+      <a class="link-more" href="/problems/">
+        All problems
+        <Icon name="arrow-right" size={15} />
+      </a>
+    </div>
+
+    {guides.length > 0 ? (
+      <div class="cards-grid">
+        {guides.map((guide) => <GuideCard guide={guide} showCategory={false} />)}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <span class="empty-state__icon"><Icon name="book" size={24} /></span>
+        <h2>Guides are in progress for this category</h2>
+        <p>
+          We only publish guides after they have been checked against official
+          documentation. Browse the full library or search for your symptom in the meantime.
+        </p>
+        <a class="btn btn--primary" href="/problems/">Browse all guides</a>
+      </div>
+    )}
+  </div>
+
+  <section class="section section--tint" aria-labelledby="category-search-heading">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Search this problem area</p>
+        <h2 id="category-search-heading">Not sure which guide matches?</h2>
+        <p>Describe the symptom or paste the error message you can see.</p>
+      </div>
+      <div style="max-width:760px;margin-inline:auto">
+        <SearchBox id={`search-${category.slug}`} showExamples={false} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="category-faq-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="category-faq-heading">{category.name} FAQ</h2>
+      </div>
+      <Faq items={category.faqs} />
+    </div>
+  </section>
+
+  <section class="section section--tint" aria-labelledby="related-categories-heading">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Keep exploring</p>
+        <h2 id="related-categories-heading">Related help areas</h2>
+      </div>
+      <div class="grid grid--3">
+        {relatedCategories.map((related) => <CategoryCard category={related} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

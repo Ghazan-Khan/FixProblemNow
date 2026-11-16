@@ -1,0 +1,224 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Toc from '../../components/Toc.astro';
+import Faq from '../../components/Faq.astro';
+import Feedback from '../../components/Feedback.astro';
+import Icon from '../../components/Icon.astro';
+import { getCategory } from '../../data/categories';
+import {
+  getGuides,
+  guideUrl,
+  resolveRelated,
+  formatDate,
+  readingTime,
+} from '../../lib/content';
+import { breadcrumbSchema, techArticleSchema, faqSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const guides = await getGuides();
+  return guides.map((guide) => ({
+    params: { category: guide.data.category, slug: guide.id },
+    props: { guide },
+  }));
+}
+
+const { guide } = Astro.props;
+const category = getCategory(guide.data.category);
+const { Content, headings } = await render(guide);
+const allGuides = await getGuides();
+const related = resolveRelated(guide, allGuides);
+const url = guideUrl(guide);
+const readMinutes = readingTime(guide.body);
+const hasToc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3).length > 2;
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: category.name, href: `/${category.slug}/` },
+  { label: guide.data.title, href: url },
+];
+
+const schemas = [
+  breadcrumbSchema(crumbs),
+  techArticleSchema(guide, url, category),
+  faqSchema(guide.data.faqs),
+];
+
+const riskClass = `badge--risk-${guide.data.risk.toLowerCase()}`;
+---
+
+<BaseLayout
+  title={guide.data.seoTitle ?? guide.data.title}
+  description={guide.data.description}
+  canonical={url}
+  image={`/og/${category.slug}.png`}
+  type="article"
+  jsonLd={schemas}
+  published={guide.data.published}
+  updated={guide.data.updated}
+>
+  <header class="article-head">
+    <div class="container article-head__inner">
+      <Breadcrumbs items={crumbs.map(({ label, href }, index) => (index === crumbs.length - 1 ? { label } : { label, href }))} />
+      <div class="badges">
+        <span class="badge badge--brand">
+          <Icon name={category.icon} size={13} />
+          {category.name}
+        </span>
+        <span class={`badge ${riskClass}`}>Risk: {guide.data.risk.toLowerCase()}</span>
+        <span class="badge">{guide.data.difficulty}</span>
+      </div>
+      <h1>{guide.data.title}</h1>
+      <p class="article-head__summary">{guide.data.summary}</p>
+      <div class="guide-meta">
+        <span>
+          <Icon name="clock" size={15} />
+          {readMinutes} min read
+        </span>
+        <span>
+          <Icon name="refresh" size={15} />
+          Last updated <time datetime={guide.data.updated.toISOString()}>{formatDate(guide.data.updated)}</time>
+        </span>
+        <span>
+          <Icon name="shield" size={15} />
+          Sources cited below
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container article-layout">
+    <div class="article-layout__main">
+      <Toc headings={headings} variant="mobile" />
+
+      <div class="quick-answer">
+        <h2>
+          <Icon name="spark" size={15} />
+          Quick answer
+        </h2>
+        <p>{guide.data.quickAnswer}</p>
+      </div>
+
+      <section aria-labelledby="symptoms-heading">
+        <h2 id="symptoms-heading" class="section-label">What this problem looks like</h2>
+        <ul class="symptoms-grid">
+          {guide.data.symptoms.map((symptom) => <li>{symptom}</li>)}
+        </ul>
+      </section>
+
+      <section class="causes" aria-labelledby="causes-heading">
+        <h2 id="causes-heading" class="section-label">Common causes</h2>
+        <p class="causes__note">
+          These are possibilities to check, not a confirmed diagnosis. Start with the
+          simplest cause that matches what you can observe.
+        </p>
+        <div class="cause-list">
+          {guide.data.causes.map((cause) => (
+            <div class="cause">
+              <h3>{cause.title}</h3>
+              <p>{cause.detail}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {(guide.data.prep.length > 0 || guide.data.safetyNotes.length > 0) && (
+        <div class="prep-box">
+          <h2>{guide.data.safetyNotes.length > 0 ? 'Before you start' : 'What you will need'}</h2>
+          {guide.data.prep.length > 0 && (
+            <ul>
+              {guide.data.prep.map((item) => <li>{item}</li>)}
+            </ul>
+          )}
+          {guide.data.safetyNotes.length > 0 && (
+            <div class="safety-notes">
+              <p class="safety-notes__label">
+                <Icon name="alert" size={15} />
+                Safety and data warnings
+              </p>
+              <ul>
+                {guide.data.safetyNotes.map((note) => <li>{note}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <div class="verification-box">
+        <Icon name="shield" size={20} />
+        <div>
+          <h2>How to confirm the problem is fixed</h2>
+          <p>{guide.data.verification}</p>
+        </div>
+      </div>
+
+      <div class="stop-box">
+        <Icon name="alert" size={20} />
+        <div>
+          <h2>When to stop and get professional help</h2>
+          <p>{guide.data.whenToStop}</p>
+        </div>
+      </div>
+
+      <section class="faq-section" aria-labelledby="faq-heading">
+        <h2 id="faq-heading" class="section-label">Frequently asked questions</h2>
+        <Faq items={guide.data.faqs} />
+      </section>
+
+      <Feedback slug={guide.id} category={guide.data.category} />
+
+      {related.length > 0 && (
+        <section class="related-guides" aria-labelledby="related-heading">
+          <h2 id="related-heading">Related troubleshooting guides</h2>
+          <ul>
+            {related.map((item) => {
+              const relatedCategory = getCategory(item.data.category);
+              return (
+                <li>
+                  <a href={guideUrl(item)}>
+                    <Icon name={relatedCategory.icon} size={16} />
+                    {item.data.title}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      <section class="sources" aria-labelledby="sources-heading">
+        <h2 id="sources-heading">Official documentation and references</h2>
+        <ul>
+          {guide.data.sources.map((source) => (
+            <li>
+              <a href={source.url} target="_blank" rel="noopener noreferrer">
+                {source.label}
+                <Icon name="external" size={13} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div class="article-note">
+        <p>
+          This guide provides general troubleshooting information for independent use.
+          Device menus and availability can vary by model, region, and software version.
+          {category.name} issues that involve damaged hardware, liquid, heat, or a swollen
+          battery should be assessed by a qualified technician.
+        </p>
+      </div>
+    </div>
+
+    {hasToc && (
+      <aside class="article-layout__aside">
+        <Toc headings={headings} variant="desktop" />
+      </aside>
+    )}
+  </div>
+</BaseLayout>

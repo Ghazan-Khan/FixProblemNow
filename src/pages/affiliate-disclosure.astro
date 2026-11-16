@@ -1,0 +1,60 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const asideLinks = [
+  { label: 'Current status', href: '#current-status' },
+  { label: 'If links are added', href: '#if-links-are-added' },
+  { label: 'Editorial independence', href: '#editorial-independence' },
+  { label: 'Questions', href: '#questions' },
+];
+---
+
+<ContentLayout
+  title="Affiliate disclosure"
+  metaTitle="Affiliate Disclosure: Current Status"
+  description="FixProblemNow currently has no affiliate links, sponsored placements or advertising. Read how any future commercial links would be disclosed."
+  canonical="/affiliate-disclosure/"
+  eyebrow="Disclosure"
+  intro="This page records the site’s current commercial relationships and how any future affiliate link or sponsored placement would be disclosed."
+  updated="2026-11-15"
+  asideLinks={asideLinks}
+  asideNote="No affiliate link is currently used anywhere on the site."
+>
+  <h2 id="current-status">Current status</h2>
+  <p>
+    At the time of publication, FixProblemNow contains no affiliate links, no sponsored content, no
+    paid product placements, and no display advertising. The site does not earn a commission when
+    you click a link to a manufacturer, retailer, or repair service.
+  </p>
+  <p>
+    Links to manufacturer support pages and official documentation are provided because they are
+    the authoritative source for a tool, download, or procedure. They are not commercial links.
+  </p>
+
+  <h2 id="if-links-are-added">If links are added</h2>
+  <p>
+    If the site later uses affiliate links, the following rules will apply:
+  </p>
+  <ul class="checklist">
+    <li>A clear disclosure will appear on the page, before the first affiliate link, not only in the footer.</li>
+    <li>The disclosure will say that the site may earn a commission and that the price to you is unchanged.</li>
+    <li>Sponsored content will be labelled as sponsored, and the sponsor will not control the troubleshooting steps.</li>
+    <li>Affiliate status will not determine which product is recommended or how a guide is ranked.</li>
+    <li>This page will be updated with the date and the categories of links in use.</li>
+  </ul>
+
+  <h2 id="editorial-independence">Editorial independence</h2>
+  <p>
+    Commercial relationships do not purchase a favourable conclusion, a removed safety warning, or a
+    higher position in search results. The <a href="/editorial-policy/">editorial policy</a> explains
+    how sources and safety are handled. If a guide recommends a manufacturer’s own tool, that is
+    because the manufacturer controls the download or recovery process, not because of a payment.
+  </p>
+
+  <h2 id="questions">Questions</h2>
+  <p>
+    If you see a link that looks commercial but is not disclosed, report it through the
+    <a href="/contact/">contact form</a> and choose the general feedback topic. The page will be
+    reviewed and the disclosure corrected if needed.
+  </p>
+</ContentLayout>

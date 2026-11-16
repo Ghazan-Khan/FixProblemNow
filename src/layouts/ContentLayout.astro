@@ -1,0 +1,104 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import { breadcrumbSchema, webPageSchema } from '../lib/schema';
+
+interface AsideLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  metaTitle?: string;
+  description: string;
+  canonical: string;
+  eyebrow?: string;
+  intro: string;
+  updated?: string;
+  asideTitle?: string;
+  asideLinks?: AsideLink[];
+  asideNote?: string;
+  showAside?: boolean;
+}
+
+const {
+  title,
+  metaTitle,
+  description,
+  canonical,
+  eyebrow = 'FixProblemNow',
+  intro,
+  updated,
+  asideTitle = 'On this page',
+  asideLinks = [],
+  asideNote,
+  showAside = true,
+} = Astro.props;
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: title, href: canonical },
+];
+const schemas = [
+  breadcrumbSchema(crumbs),
+  webPageSchema(metaTitle ?? title, description, canonical, {
+    dateModified: updated ? `${updated}T00:00:00.000Z` : undefined,
+  }),
+];
+---
+
+<BaseLayout
+  title={metaTitle ?? title}
+  description={description}
+  canonical={canonical}
+  jsonLd={schemas}
+  image="/og/default.png"
+>
+  <header class="content-hero">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      <p>{intro}</p>
+      {updated && (
+        <p class="legal-meta" style="margin-top:1rem;margin-bottom:0">
+          Last updated <time datetime={updated}>{updated}</time>
+        </p>
+      )}
+    </div>
+  </header>
+
+  <div class="container content-layout">
+    <article class="content-main prose">
+      <slot />
+    </article>
+
+    {showAside && (
+      <aside class="content-aside">
+        <div class="aside-card">
+          <h2>{asideTitle}</h2>
+          {asideLinks.length > 0 && (
+            <ul>
+              {asideLinks.map((link) => (
+                <li><a href={link.href}>{link.label}</a></li>
+              ))}
+            </ul>
+          )}
+          {asideNote && <p style="margin-bottom:0">{asideNote}</p>}
+        </div>
+        <div class="aside-card" style="margin-top:1rem">
+          <h2>Need a guide?</h2>
+          <p style="margin-bottom:0.6rem">
+            Search the library by symptom, device or error message.
+          </p>
+          <a class="link-more" href="/search/">
+            Search guides
+            <Icon name="arrow-right" size={15} />
+          </a>
+        </div>
+      </aside>
+    )}
+  </div>
+</BaseLayout>

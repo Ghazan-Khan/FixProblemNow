@@ -1,0 +1,179 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const asideLinks = [
+  { label: 'Before you contact support', href: '#before-you-contact-support' },
+  { label: 'Manufacturer support', href: '#manufacturer-support' },
+  { label: 'Repair and data recovery', href: '#repair-and-data-recovery' },
+  { label: 'Account recovery', href: '#account-recovery' },
+  { label: 'Urgent safety issues', href: '#urgent-safety-issues' },
+  { label: 'Avoiding support scams', href: '#avoiding-support-scams' },
+];
+
+const supportLinks = [
+  { name: 'Microsoft support', href: 'https://support.microsoft.com/', note: 'Windows, Microsoft 365, Outlook, Xbox and account help.' },
+  { name: 'Apple support', href: 'https://support.apple.com/', note: 'iPhone, iPad, Mac, Apple ID and Apple service.' },
+  { name: 'Google support', href: 'https://support.google.com/', note: 'Android, Gmail, Google Account, Chrome and Nest.' },
+  { name: 'Samsung support', href: 'https://www.samsung.com/us/support/', note: 'Galaxy phones, tablets, TVs and appliances.' },
+  { name: 'HP support', href: 'https://support.hp.com/', note: 'Laptops, desktops and printers.' },
+  { name: 'Dell support', href: 'https://www.dell.com/support/home/', note: 'Laptops, desktops, monitors and drivers.' },
+  { name: 'Lenovo support', href: 'https://support.lenovo.com/', note: 'ThinkPad, IdeaPad, Legion and desktop systems.' },
+  { name: 'Canon support', href: 'https://www.usa.canon.com/support', note: 'Printers, cameras and scanners.' },
+  { name: 'Epson support', href: 'https://epson.com/Support/sl/s', note: 'Printers, scanners and projectors.' },
+  { name: 'Brother support', href: 'https://support.brother.com/', note: 'Printers, scanners and label makers.' },
+];
+---
+
+<ContentLayout
+  title="Get additional help"
+  metaTitle="Get Additional Help: Support, Repair and Recovery"
+  description="Find the right kind of help when a troubleshooting guide is not enough: manufacturer support, repair, data recovery, account recovery and scam avoidance."
+  canonical="/get-help/"
+  eyebrow="Support options"
+  intro="Some problems need official tools, a replacement part, or an account recovery process that only the provider can complete. This page explains where to go next and what to prepare."
+  asideLinks={asideLinks}
+  asideNote="FixProblemNow does not provide remote access, paid repairs, account recovery, or a live support line."
+>
+  <h2 id="before-you-contact-support">Before you contact support</h2>
+  <p>
+    A little preparation makes any support conversation shorter. Write down the device model,
+    operating-system version, the exact error text, and what changed before the problem started.
+    Note which steps you have already tried and what happened after each one. If the problem is
+    intermittent, record roughly when it occurs and whether it affects one app, one network, or the
+    whole device.
+  </p>
+  <ul class="checklist">
+    <li>Device model and serial number, if it is accessible.</li>
+    <li>Operating-system version and the date of the last update.</li>
+    <li>The exact error message, stop code, or on-screen warning.</li>
+    <li>Whether the problem affects one app, one user account, or every user.</li>
+    <li>What you changed immediately before the problem began.</li>
+    <li>Which guides or fixes you have already tried, and the result.</li>
+  </ul>
+  <div class="callout callout--warning">
+    <p class="callout__label">Do not share more than necessary</p>
+    <p>
+      Never send a password, one-time verification code, recovery key, or full payment-card number
+      to a support agent, forum, or email address. A legitimate support agent should not ask you to
+      read out a code that appeared on your phone, and should not ask for remote access before
+      explaining what they will do.
+    </p>
+  </div>
+
+  <h2 id="manufacturer-support">Manufacturer support</h2>
+  <p>
+    Use the manufacturer’s own support site for warranty questions, official drivers, recovery
+    images, firmware, diagnostics, and model-specific reset procedures. Third-party driver bundles
+    and unofficial firmware can introduce malware or break the device’s warranty terms.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Support site</th>
+          <th scope="col">Typical coverage</th>
+        </tr>
+      </thead>
+      <tbody>
+        {supportLinks.map((link) => (
+          <tr>
+            <td>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                {link.name}
+                <Icon name="external" size={12} />
+              </a>
+            </td>
+            <td>{link.note}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    For internet outages, contact your internet provider rather than the router manufacturer once
+    you have confirmed that the router has no internet connection and a restart has not helped.
+    Have your account number and the router’s status-light behaviour ready.
+  </p>
+
+  <h2 id="repair-and-data-recovery">Repair and data recovery</h2>
+  <p>
+    Look for a repair provider that advertises the specific repair you need, provides a written
+    estimate, and explains whether diagnostic fees apply. Ask whether the repair will affect your
+    data and whether they will test the device with you before you leave. For a device containing
+    important files, ask about data handling before authorising a repair that may erase storage.
+  </p>
+  <p>
+    Data recovery is different from repair. A repair shop may replace a failed drive; a data
+    recovery service specialises in reading a drive that no longer mounts. If a drive is clicking,
+    grinding, or has been exposed to liquid, stop using it and seek specialist recovery rather than
+    running repeated repair tools. Every additional write can reduce what is recoverable.
+  </p>
+
+  <h2 id="account-recovery">Account recovery</h2>
+  <p>
+    Account recovery must be handled by the company that controls the account. Use the official
+    sign-in page and choose the “forgot password” or “cannot sign in” route. Do not use a link from
+    an unsolicited email or message. For an account protected by two-factor authentication, use the
+    provider’s documented recovery codes or account recovery process; no third-party service can
+    legitimately bypass that protection.
+  </p>
+  <p>
+    If a work or school account is locked, contact its administrator. They may be able to reset
+    access without the public recovery flow, and they are the only party allowed to change some
+    organisational security settings.
+  </p>
+
+  <h2 id="urgent-safety-issues">Urgent safety issues</h2>
+  <div class="callout callout--important">
+    <p class="callout__label">Stop and treat it as a safety issue</p>
+    <p>
+      Disconnect power if it is safe to do so and move away from a device that is smoking,
+      sparking, producing a burning smell, or has a swollen battery. Do not open the device or
+      continue charging it. For fire, smoke, or a burning smell that does not stop, contact your
+      local emergency service. For a swollen battery, use a qualified repair or battery-disposal
+      service rather than puncturing or pressing the battery.
+    </p>
+  </div>
+  <p>
+    Liquid damage is also a stopping point for DIY work. Power the device off, do not charge it, and
+    do not use rice or heat to dry it. Seek service that can clean and inspect the internals.
+  </p>
+
+  <h2 id="avoiding-support-scams">Avoiding support scams</h2>
+  <ul class="icon-list">
+    <li>
+      <Icon name="alert" size={18} />
+      <div>
+        <strong>Unexpected calls or pop-ups.</strong>
+        <span>A browser pop-up or phone call claiming your device is infected is not a diagnosis. Close the window or end the call.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="alert" size={18} />
+      <div>
+        <strong>Remote access before explanation.</strong>
+        <span>A legitimate support process should tell you what it needs and why. Refuse remote access you did not initiate.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="alert" size={18} />
+      <div>
+        <strong>Payment by gift card or transfer.</strong>
+        <span>Requests for gift cards, cryptocurrency, or a bank transfer to an individual are common scam patterns.</span>
+      </div>
+    </li>
+    <li>
+      <Icon name="alert" size={18} />
+      <div>
+        <strong>Search-advertised phone numbers.</strong>
+        <span>Use the support site you typed yourself, not a phone number from an advertisement or an unsolicited search result.</span>
+      </div>
+    </li>
+  </ul>
+  <p>
+    If you have already given someone remote access, disconnect the network connection, change
+    important passwords from a different device, and check for unfamiliar remote-access software.
+    Report the incident to your bank if payment details were shared.
+  </p>
+</ContentLayout>

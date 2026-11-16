@@ -1,0 +1,372 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import { categories } from '../data/categories';
+import { getGuides } from '../lib/content';
+import { breadcrumbSchema } from '../lib/schema';
+
+const guides = await getGuides();
+const counts = new Map(categories.map((category) => [category.slug, 0]));
+for (const guide of guides) {
+  counts.set(guide.data.category, (counts.get(guide.data.category) ?? 0) + 1);
+}
+const categoriesWithGuides = categories.filter((category) => (counts.get(category.slug) ?? 0) > 0);
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Search', href: '/search/' },
+];
+---
+
+<BaseLayout
+  title="Search Troubleshooting Guides"
+  description="Search FixProblemNow guides by symptom, device, error message or category. Results come from the published troubleshooting library."
+  canonical="/search/"
+  noindex={true}
+  jsonLd={breadcrumbSchema(crumbs)}
+>
+  <div class="container search-page">
+    <Breadcrumbs items={crumbs} />
+    <div class="search-page__head">
+      <h1>Search the troubleshooting library</h1>
+      <p>
+        Describe what the device is doing, or paste the visible error message. Search matches guide
+        titles, symptoms, common wording, device names and section headings.
+      </p>
+    </div>
+
+    <form class="search-page__form" role="search" action="/search/" method="get" data-search-page-form>
+      <div class="search-bar">
+        <div class="search-bar__input">
+          <Icon name="search" size={20} />
+          <label class="visually-hidden" for="search-page-input">Search troubleshooting guides</label>
+          <input
+            id="search-page-input"
+            type="search"
+            name="q"
+            placeholder="e.g. laptop turns on but screen stays black"
+            autocomplete="off"
+            spellcheck="false"
+            data-search-page-input
+          />
+        </div>
+        <label class="visually-hidden" for="search-page-category">Filter by category</label>
+        <select id="search-page-category" name="category" data-search-page-category>
+          <option value="">All categories</option>
+          {categoriesWithGuides.map((category) => (
+            <option value={category.slug}>{category.name}</option>
+          ))}
+        </select>
+        <button class="btn btn--primary" type="submit">
+          Search
+          <Icon name="arrow-right" size={16} />
+        </button>
+      </div>
+    </form>
+
+    <p class="search-meta" data-search-meta>
+      <span>Enter a search term to begin.</span>
+      <span>18 categories · {guides.length} published guides</span>
+    </p>
+    <p class="visually-hidden" aria-live="polite" data-search-page-status></p>
+
+    <div data-search-initial>
+      <div class="empty-state">
+        <span class="empty-state__icon"><Icon name="book" size={24} /></span>
+        <h2>Start with a symptom or a device</h2>
+        <p>
+          Short, specific phrases work best. You can include words like “won’t”, “stuck”, “offline”,
+          “no sound”, or a stop code you can read from the screen.
+        </p>
+        <div class="example-links">
+          <button type="button" data-example="laptop won't turn on">Laptop won’t turn on</button>
+          <button type="button" data-example="wifi connected but no internet">Wi-Fi connected but no internet</button>
+          <button type="button" data-example="printer offline">Printer offline</button>
+          <button type="button" data-example="phone overheating">Phone overheating</button>
+          <button type="button" data-example="windows update failed">Windows update failed</button>
+        </div>
+      </div>
+
+      <div class="search-categories">
+        <h2>Browse by category instead</h2>
+        <ul class="search-categories__list">
+          {categoriesWithGuides.map((category) => (
+            <li>
+              <a href={`/${category.slug}/`}>
+                <Icon name={category.icon} size={15} />
+                {category.name}
+                <span class="muted">({counts.get(category.slug)})</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div data-search-results hidden>
+      <div class="filter-chips" role="group" aria-label="Filter results by category" data-search-chips style="margin:0 0 1rem">
+        <button class="filter-chip" type="button" aria-pressed="true" data-chip-category="">All categories</button>
+        {categoriesWithGuides.map((category) => (
+          <button class="filter-chip" type="button" aria-pressed="false" data-chip-category={category.slug}>
+            {category.name}
+          </button>
+        ))}
+      </div>
+      <ul class="results" data-search-list></ul>
+      <div class="empty-state" data-search-empty hidden>
+        <span class="empty-state__icon"><Icon name="search" size={24} /></span>
+        <h2 data-search-empty-title>No guides match that search</h2>
+        <p data-search-empty-text>
+          Check the spelling or try fewer words. A device name plus a symptom often works better
+          than a full sentence. If nothing matches, the contact page is the right next step.
+        </p>
+        <div class="example-links">
+          <button type="button" data-example="black screen">Black screen</button>
+          <button type="button" data-example="not charging">Not charging</button>
+          <button type="button" data-example="no internet">No internet</button>
+          <a href="/categories/">Browse categories</a>
+          <a href="/contact/">Contact us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { searchDocs, type SearchDoc, type SearchResult } from '../lib/search';
+
+  const form = document.querySelector<HTMLFormElement>('[data-search-page-form]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-page-input]');
+  const select = document.querySelector<HTMLSelectElement>('[data-search-page-category]');
+  const meta = document.querySelector<HTMLElement>('[data-search-meta]');
+  const status = document.querySelector<HTMLElement>('[data-search-page-status]');
+  const initial = document.querySelector<HTMLElement>('[data-search-initial]');
+  const resultsWrap = document.querySelector<HTMLElement>('[data-search-results]');
+  const list = document.querySelector<HTMLElement>('[data-search-list]');
+  const empty = document.querySelector<HTMLElement>('[data-search-empty]');
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('[data-search-chips] [data-chip-category]')];
+
+  let docs: SearchDoc[] = [];
+  let loaded = false;
+  let indexError = false;
+  let activeCategory = '';
+
+  const highlight = (text: string, terms: string[]): DocumentFragment => {
+    const fragment = document.createDocumentFragment();
+    if (terms.length === 0) {
+      fragment.append(document.createTextNode(text));
+      return fragment;
+    }
+    const pattern = new RegExp(
+      `(${terms
+        .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+        .sort((a, b) => b.length - a.length)
+        .join('|')})`,
+      'gi',
+    );
+    let lastIndex = 0;
+    for (const match of text.matchAll(pattern)) {
+      const index = match.index ?? 0;
+      if (index > lastIndex) fragment.append(document.createTextNode(text.slice(lastIndex, index)));
+      const mark = document.createElement('mark');
+      mark.textContent = match[0];
+      fragment.append(mark);
+      lastIndex = index + match[0].length;
+    }
+    if (lastIndex < text.length) fragment.append(document.createTextNode(text.slice(lastIndex)));
+    return fragment;
+  };
+
+  const termsFrom = (query: string): string[] =>
+    [...new Set(query.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 1))];
+
+  const render = (results: SearchResult[], query: string) => {
+    if (!list || !resultsWrap || !initial || !meta || !empty) return;
+    initial.hidden = true;
+    resultsWrap.hidden = false;
+    list.replaceChildren();
+    empty.hidden = results.length > 0;
+
+    const emptyTitle = empty.querySelector<HTMLElement>('[data-search-empty-title]');
+    const emptyText = empty.querySelector<HTMLElement>('[data-search-empty-text]');
+    if (emptyTitle) emptyTitle.textContent = 'No guides match that search';
+    if (emptyText) {
+      emptyText.textContent =
+        'Check the spelling or try fewer words. A device name plus a symptom often works better than a full sentence. If nothing matches, the contact page is the right next step.';
+    }
+
+    const terms = termsFrom(query);
+    const fragment = document.createDocumentFragment();
+
+    results.forEach((result) => {
+      const item = document.createElement('li');
+      item.className = 'result';
+
+      const cat = document.createElement('div');
+      cat.className = 'result__cat';
+      cat.textContent = result.doc.categoryName;
+
+      const heading = document.createElement('h2');
+      const link = document.createElement('a');
+      link.href = result.doc.url;
+      link.append(highlight(result.doc.title, terms));
+      heading.append(link);
+
+      const summary = document.createElement('p');
+      summary.append(highlight(result.doc.summary, terms));
+
+      if (result.matchedHeadings.length > 0) {
+        const headingNote = document.createElement('p');
+        headingNote.className = 'result__url';
+        headingNote.textContent = `Matches section: ${result.matchedHeadings.join(' · ')}`;
+        summary.append(' ', headingNote);
+      }
+
+      const url = document.createElement('span');
+      url.className = 'result__url';
+      url.textContent = result.doc.url;
+
+      item.append(cat, heading, summary, url);
+      fragment.append(item);
+    });
+
+    list.append(fragment);
+
+    const label = query.trim();
+    meta.replaceChildren();
+    const summary = document.createElement('span');
+    summary.append(
+      document.createTextNode(
+        results.length === 0
+          ? `No results for “${label}”`
+          : `${results.length} result${results.length === 1 ? '' : 's'} for “${label}”`,
+      ),
+    );
+    const filterNote = document.createElement('span');
+    filterNote.textContent = activeCategory
+      ? `Filtered to ${select?.selectedOptions[0]?.textContent ?? 'one category'}`
+      : 'All categories';
+    meta.append(summary, filterNote);
+
+    if (status) {
+      status.textContent = results.length === 0
+        ? 'No guides matched the search.'
+        : `${results.length} search results available.`;
+    }
+  };
+
+  const run = () => {
+    if (!input || !meta || !resultsWrap || !initial) return;
+    const query = input.value.trim();
+    activeCategory = select?.value ?? '';
+
+    chips.forEach((chip) => {
+      chip.setAttribute('aria-pressed', String((chip.dataset.chipCategory ?? '') === activeCategory));
+    });
+
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (activeCategory) params.set('category', activeCategory);
+    const next = params.toString();
+    history.replaceState(null, '', next ? `/search/?${next}` : '/search/');
+
+    if (!loaded) {
+      meta.replaceChildren(Object.assign(document.createElement('span'), { textContent: 'Loading search index…' }));
+      return;
+    }
+
+    if (indexError) {
+      const errorTitle = 'Search is temporarily unavailable';
+      const errorText =
+        'The search index could not be loaded. Check your connection and reload the page, or browse the categories below.';
+      if (!query) {
+        resultsWrap.hidden = true;
+        initial.hidden = false;
+        meta.replaceChildren(Object.assign(document.createElement('span'), { textContent: errorTitle }));
+      } else {
+        initial.hidden = true;
+        resultsWrap.hidden = false;
+        list?.replaceChildren();
+        if (empty) {
+          empty.hidden = false;
+          const emptyTitle = empty.querySelector<HTMLElement>('[data-search-empty-title]');
+          const emptyText = empty.querySelector<HTMLElement>('[data-search-empty-text]');
+          if (emptyTitle) emptyTitle.textContent = errorTitle;
+          if (emptyText) emptyText.textContent = errorText;
+        }
+        meta.replaceChildren(Object.assign(document.createElement('span'), { textContent: errorTitle }));
+      }
+      if (status) status.textContent = `${errorText} No search results are available.`;
+      return;
+    }
+
+    if (!query) {
+      resultsWrap.hidden = true;
+      initial.hidden = false;
+      meta.replaceChildren();
+      const left = document.createElement('span');
+      left.textContent = 'Enter a search term to begin.';
+      const right = document.createElement('span');
+      right.textContent = `${docs.length} published guides`;
+      meta.append(left, right);
+      return;
+    }
+
+    const results = searchDocs(docs, query, activeCategory);
+    render(results, query);
+  };
+
+  const load = async () => {
+    try {
+      const response = await fetch('/search-index.json', {
+        headers: { Accept: 'application/json' },
+      });
+      if (!response.ok) throw new Error('Index request failed');
+      docs = (await response.json()) as SearchDoc[];
+      loaded = true;
+    } catch {
+      loaded = true;
+      indexError = true;
+      docs = [];
+    }
+    run();
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  if (input) input.value = params.get('q') ?? '';
+  if (select) select.value = params.get('category') ?? '';
+  activeCategory = select?.value ?? '';
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    run();
+  });
+  input?.addEventListener('input', () => {
+    window.clearTimeout(Number(input.dataset.timer ?? 0));
+    const timer = window.setTimeout(run, 200);
+    input.dataset.timer = String(timer);
+  });
+  select?.addEventListener('change', run);
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      if (!select) return;
+      select.value = chip.dataset.chipCategory ?? '';
+      run();
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-example]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!input) return;
+      input.value = button.dataset.example ?? '';
+      run();
+      input.focus();
+    });
+  });
+
+  // Show an immediate loading state, then replace it once the index arrives.
+  run();
+  load();
+</script>

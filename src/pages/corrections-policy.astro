@@ -1,0 +1,115 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const asideLinks = [
+  { label: 'What counts as a correction', href: '#what-counts-as-a-correction' },
+  { label: 'How to report an issue', href: '#how-to-report-an-issue' },
+  { label: 'How reports are reviewed', href: '#how-reports-are-reviewed' },
+  { label: 'Safety corrections', href: '#safety-corrections' },
+  { label: 'What we cannot promise', href: '#what-we-cannot-promise' },
+];
+---
+
+<ContentLayout
+  title="Corrections policy"
+  metaTitle="Corrections Policy: Reporting an Error"
+  description="How to report a factual error, outdated step, broken link or safety problem in a FixProblemNow guide, and how corrections are reviewed and published."
+  canonical="/corrections-policy/"
+  eyebrow="Accuracy"
+  intro="Guides can become wrong when a menu moves, a download changes, or a device behaves differently from the documentation. This policy explains how to report an error and what happens next."
+  updated="2026-11-15"
+  asideLinks={asideLinks}
+  asideNote="For a safety issue, say so clearly in the message so it can be prioritised."
+>
+  <h2 id="what-counts-as-a-correction">What counts as a correction</h2>
+  <ul class="checklist">
+    <li>A factual statement that is wrong or unsupported by the linked source.</li>
+    <li>A menu path, command, or setting that no longer exists in a current version.</li>
+    <li>A step that is in the wrong order or can cause avoidable data loss.</li>
+    <li>A broken link to official documentation.</li>
+    <li>A missing warning about physical safety, battery swelling, liquid, or data erasure.</li>
+    <li>A guide that applies to the wrong device, operating system, or category.</li>
+  </ul>
+  <p>
+    Differences of opinion about which fix is most likely are not corrections. If a guide works for
+    most devices but not yours, that is useful context, but the guide may still be accurate for the
+    documented case. We are interested in both kinds of report; they are handled differently.
+  </p>
+
+  <h2 id="how-to-report-an-issue">How to report an issue</h2>
+  <p>
+    Use the <a href="/contact/?topic=correction">contact form</a> and include:
+  </p>
+  <ul>
+    <li>The full guide URL or title.</li>
+    <li>The device model and operating-system version.</li>
+    <li>The exact section, sentence, command, or step that is wrong.</li>
+    <li>What you observed instead, with the exact error text if there is one.</li>
+    <li>A link to official documentation that supports the correction, if you have one.</li>
+  </ul>
+  <p>
+    Do not send passwords, recovery keys, one-time codes, or personal files. A screenshot is helpful
+    only if it does not expose private information.
+  </p>
+
+  <h2 id="how-reports-are-reviewed">How reports are reviewed</h2>
+  <ol class="steps">
+    <li>
+      <strong>Check the report against the current guide.</strong>
+      <p>
+        We confirm which version of the guide the report refers to and whether the quoted text is
+        still present.
+      </p>
+    </li>
+    <li>
+      <strong>Compare with official documentation.</strong>
+      <p>
+        The relevant manufacturer or operating-system source is checked. If the source has changed,
+        the guide is updated. If the report cannot be reproduced or supported, the guide may remain
+        unchanged.
+      </p>
+    </li>
+    <li>
+      <strong>Update the guide and its date.</strong>
+      <p>
+        Confirmed corrections change the article content and the visible update date. If the change
+        is substantial, the affected section is rewritten rather than patched with a contradictory
+        note.
+      </p>
+    </li>
+    <li>
+      <strong>Record the outcome.</strong>
+      <p>
+        Correction reports and their outcomes are kept long enough to avoid duplicate work and to
+        spot repeated problems with a guide. Personal contact details are not published.
+      </p>
+    </li>
+  </ol>
+
+  <h2 id="safety-corrections">Safety corrections</h2>
+  <p>
+    A missing or incorrect safety warning is treated as a priority. If a guide could lead someone to
+    charge a swollen battery, open a power supply, ignore liquid damage, or erase data without a
+    backup warning, report it immediately and state “safety” in the message. The guide may be
+    temporarily amended or unpublished while the issue is checked.
+  </p>
+  <div class="callout callout--important">
+    <p class="callout__label">If you are in danger</p>
+    <p>
+      Do not wait for a website correction. Disconnect power if it is safe to do so, move away from
+      smoke or a burning smell, and contact your local emergency service when appropriate. For a
+      swollen battery, use a qualified repair or disposal service.
+    </p>
+  </div>
+
+  <h2 id="what-we-cannot-promise">What we cannot promise</h2>
+  <p>
+    We cannot guarantee an individual reply time, a remote diagnosis, or a fix for your specific
+    device. We also cannot mediate a warranty dispute or recover an account. What we can do is review
+    a specific, evidence-based report and correct the published guidance when it is wrong.
+  </p>
+  <p>
+    See the <a href="/editorial-policy/">editorial policy</a> for the standards used when a guide is
+    written and the <a href="/how-it-works/">how it works page</a> for the risk-level definitions.
+  </p>
+</ContentLayout>

@@ -1,0 +1,52 @@
+---
+import Icon from './Icon.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+  variant?: 'both' | 'desktop' | 'mobile';
+}
+
+const { headings, variant = 'both' } = Astro.props;
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const showDesktop = variant === 'both' || variant === 'desktop';
+const showMobile = variant === 'both' || variant === 'mobile';
+---
+
+{items.length > 2 && (
+  <>
+    {showDesktop && (
+      <nav class="toc" aria-label="On this page">
+        <h2>On this page</h2>
+        <ol>
+          {items.map((heading) => (
+            <li>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    {showMobile && (
+      <details class="toc toc--mobile">
+        <summary>
+          On this page
+          <Icon name="chevron-down" size={16} />
+        </summary>
+        <ol>
+          {items.map((heading) => (
+            <li>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    )}
+  </>
+)}

@@ -1,0 +1,162 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const asideLinks = [
+  { label: 'Summary', href: '#summary' },
+  { label: 'Information you send', href: '#information-you-send' },
+  { label: 'Guide feedback', href: '#guide-feedback' },
+  { label: 'Server logs and security', href: '#server-logs-and-security' },
+  { label: 'Cookies and analytics', href: '#cookies-and-analytics' },
+  { label: 'Service providers', href: '#service-providers' },
+  { label: 'Retention', href: '#retention' },
+  { label: 'Your rights', href: '#your-rights' },
+  { label: 'Contact', href: '#contact' },
+];
+---
+
+<ContentLayout
+  title="Privacy policy"
+  metaTitle="Privacy Policy: What Data This Site Handles"
+  description="What FixProblemNow collects through contact messages and anonymous guide feedback, how it is used, which services may process it, and your privacy rights."
+  canonical="/privacy-policy/"
+  eyebrow="Privacy"
+  intro="This policy describes the limited information the site handles: a message you choose to send, anonymous guide feedback, and standard server data needed to run and protect the service."
+  updated="2026-11-15"
+  asideLinks={asideLinks}
+  asideNote="This page describes the site as built. It is not a claim of certification or a substitute for legal advice."
+>
+  <h2 id="summary">Summary</h2>
+  <ul class="checklist">
+    <li>No account is required to read any guide.</li>
+    <li>No advertising, analytics, tracking pixels, or social embeds are used.</li>
+    <li>Contact details are requested only when you choose to send a message.</li>
+    <li>Guide feedback records the guide, category, yes/no answer, and time — not your identity.</li>
+    <li>You can ask about, correct, or request deletion of a message you sent.</li>
+  </ul>
+
+  <h2 id="information-you-send">Information you send</h2>
+  <p>
+    The <a href="/contact/">contact form</a> asks for your name, email address, topic, optional guide
+    reference, and message. The name and email are used to understand and reply to the message. The
+    topic helps route a correction, accessibility report, or privacy request. The guide reference
+    helps locate the page you are writing about.
+  </p>
+  <p>
+    Do not include passwords, one-time verification codes, recovery keys, full payment-card numbers,
+    or other sensitive information in a message. The site does not need them to investigate a guide
+    problem. If you accidentally send such information, use the contact form to ask for its deletion.
+  </p>
+  <p>
+    Contact messages are delivered through a configured email provider or webhook. The provider
+    processes the message on behalf of the site operator. The site does not sell contact details or
+    use them for marketing.
+  </p>
+
+  <h2 id="guide-feedback">Guide feedback</h2>
+  <p>
+    Each guide includes a “Was this guide helpful?” control with Yes and No options. When you use it,
+    the server records the guide identifier, category, whether the answer was helpful, and the time.
+    It does not ask for your name, email address, or a free-text comment. A random identifier is not
+    created for you.
+  </p>
+  <p>
+    The browser stores a timestamp in local storage under a key such as
+    <code>fpn-feedback:guide-name</code> so the same browser does not submit the same feedback twice.
+    That value stays on your device and is not sent with the feedback. Clearing site data removes it.
+    Local storage is not a cookie and is not used for advertising or cross-site tracking.
+  </p>
+
+  <h2 id="server-logs-and-security">Server logs and security</h2>
+  <p>
+    The hosting provider and web server may record standard technical data such as the requested
+    URL, time, browser user-agent, and IP address. This data is used to deliver pages, diagnose
+    errors, and protect the service from abuse. The application does not write contact message
+    bodies or email addresses to its error log.
+  </p>
+  <p>
+    To limit form abuse, the server keeps a short-lived in-memory counter keyed by IP address. The
+    counter contains a request count and reset time, is held only for the rate-limit window (about
+    ten minutes), and is not used to build a profile. A distributed deployment may also apply rate
+    limiting at the edge.
+  </p>
+
+  <h2 id="cookies-and-analytics">Cookies and analytics</h2>
+  <p>
+    The site does not set advertising or analytics cookies. It does not use Google Analytics,
+    advertising pixels, session replay, heatmaps, or social media embeds that track you across sites.
+    Fonts are served from this domain rather than a third-party font service.
+  </p>
+  <p>
+    The hosting provider may use strictly necessary cookies or similar technology for security and
+    load balancing. Those are controlled by the host, not by the site’s content code.
+  </p>
+
+  <h2 id="service-providers">Service providers</h2>
+  <p>
+    Depending on how this deployment is configured, the following categories of provider may process
+    data:
+  </p>
+  <ul>
+    <li><strong>Hosting and infrastructure.</strong> Serves pages and may keep standard server logs.</li>
+    <li><strong>Email delivery.</strong> If configured, an email API such as Resend delivers contact messages.</li>
+    <li><strong>Webhook endpoint.</strong> If configured, contact or feedback records are forwarded to an endpoint chosen by the site operator.</li>
+  </ul>
+  <p>
+    These providers may process data in countries other than yours. Where required, the site
+    operator is responsible for putting appropriate transfer safeguards in place. The exact
+    providers active on a deployment are determined by its environment configuration, which is
+    documented for the operator in the project README.
+  </p>
+
+  <h2 id="retention">Retention</h2>
+  <p>
+    Contact messages are kept only as long as needed to handle the message, investigate a
+    correction, or meet a legal obligation. Feedback records are kept in aggregate or record form
+    for as long as they are useful for prioritising guide updates. Rate-limit counters expire
+    automatically. Server logs are retained according to the hosting provider’s configuration.
+  </p>
+
+  <h2 id="your-rights">Your rights</h2>
+  <p>
+    Where data protection law applies to you, you may have the right to ask for a copy of the
+    personal data held about you, to correct it, to delete it, to restrict or object to certain
+    processing, and to complain to a supervisory authority. The site does not make automated
+    decisions with legal or similarly significant effects, and it does not profile visitors for
+    advertising.
+  </p>
+  <p>
+    To make a request, use the <a href="/contact/?topic=privacy">contact form</a> and choose the
+    privacy topic. Include enough information to identify the message you sent; do not send a
+    password or identity document unless it is specifically requested through a verified channel.
+    A request may need to be verified before it can be completed.
+  </p>
+
+  <h2 id="children">Children</h2>
+  <p>
+    The site is a general technology reference and is not directed at children under 13. Contact
+    details should be submitted by a parent, guardian, or someone old enough to manage their own
+    personal data. If a message from a child is identified, it will be deleted on request.
+  </p>
+
+  <h2 id="security">Security</h2>
+  <p>
+    The site uses HTTPS in production, validates form input, limits request rates, sets security
+    headers, and avoids logging sensitive message content. No internet service can promise absolute
+    security. If you believe you have found a security issue, use the contact form and choose the
+    privacy topic, and describe the issue without exploiting it.
+  </p>
+
+  <h2 id="changes">Changes to this policy</h2>
+  <p>
+    If the way the site handles data changes, this page will be updated and the date at the top will
+    change. Material changes will be described in plain language rather than hidden in a revision
+    history.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Privacy questions and requests can be sent through the
+    <a href="/contact/?topic=privacy">contact form</a>. See also the
+    <a href="/terms/">terms and conditions</a> and <a href="/disclaimer/">disclaimer</a>.
+  </p>
+</ContentLayout>

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Search result pages are crawlable but marked noindex in the HTML.
+Disallow: /search/
+Disallow: /api/
+
+Sitemap: https://fixproblemnow.com/sitemap-index.xml

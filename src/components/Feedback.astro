@@ -1,0 +1,95 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  slug: string;
+  category: string;
+}
+
+const { slug, category } = Astro.props;
+const reportHref = `/contact/?topic=guide&guide=${encodeURIComponent(slug)}`;
+---
+
+<div class="feedback" data-feedback data-guide={slug} data-category={category}>
+  <p class="feedback__question">Was this guide helpful?</p>
+  <div class="feedback__actions">
+    <button class="btn btn--outline btn--sm" type="button" data-helpful="yes">
+      <Icon name="thumbs-up" size={15} />
+      Yes
+    </button>
+    <button class="btn btn--outline btn--sm" type="button" data-helpful="no">
+      <Icon name="thumbs-down" size={15} />
+      No
+    </button>
+    <a class="btn btn--ghost btn--sm" href={reportHref}>Report an issue</a>
+  </div>
+  <p class="feedback__thanks" data-feedback-status hidden></p>
+</div>
+
+<script>
+  import { site } from '../data/site';
+
+  const blocks = document.querySelectorAll<HTMLElement>('[data-feedback]');
+
+  blocks.forEach((block) => {
+    const slug = block.dataset.guide ?? '';
+    const category = block.dataset.category ?? '';
+    const status = block.querySelector<HTMLElement>('[data-feedback-status]');
+    const buttons = block.querySelectorAll<HTMLButtonElement>('[data-helpful]');
+    const storageKey = `fpn-feedback:${slug}`;
+
+    const showThanks = (message: string) => {
+      if (!status) return;
+      status.textContent = message;
+      status.hidden = false;
+    };
+
+    try {
+      if (localStorage.getItem(storageKey)) {
+        showThanks('Thanks — feedback for this guide was already recorded on this device.');
+        buttons.forEach((button) => {
+          button.disabled = true;
+        });
+      }
+    } catch {
+      // Storage can be unavailable in private modes; feedback still works.
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', async () => {
+        const helpful = button.dataset.helpful === 'yes';
+        buttons.forEach((item) => {
+          item.disabled = true;
+        });
+        if (status) {
+          status.hidden = true;
+          status.textContent = '';
+        }
+
+        try {
+          const response = await fetch(site.contact.feedbackEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ guide: slug, category, helpful }),
+          });
+
+          if (!response.ok) throw new Error('Feedback could not be recorded');
+
+          try {
+            localStorage.setItem(storageKey, new Date().toISOString());
+          } catch {
+            // Ignore storage failures; the submission succeeded.
+          }
+          showThanks('Thanks — your feedback was recorded. It helps us prioritise guide updates.');
+        } catch {
+          showThanks(
+            'Sorry, feedback could not be sent from this deployment. You can report a problem through the contact page instead.',
+          );
+          buttons.forEach((item) => {
+            item.disabled = false;
+          });
+        }
+      });
+    });
+  });
+</script>

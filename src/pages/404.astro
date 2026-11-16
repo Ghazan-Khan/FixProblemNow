@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SearchBox from '../components/SearchBox.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The page you requested does not exist. Search the troubleshooting library or browse the problem categories."
+  canonical="/404.html"
+  noindex={true}
+>
+  <div class="container error-page">
+    <div>
+      <p class="error-page__code">404 — page not found</p>
+      <h1>That page is not in the library</h1>
+      <p>
+        The link may be old, mistyped, or pointing to a guide that has moved. Search with the symptom
+        or error message, or start from a category.
+      </p>
+      <div class="error-page__actions">
+        <a class="btn btn--primary" href="/problems/">
+          <Icon name="book" size={16} />
+          All troubleshooting guides
+        </a>
+        <a class="btn btn--outline" href="/categories/">
+          <Icon name="grid" size={16} />
+          Browse categories
+        </a>
+        <a class="btn btn--ghost" href="/">Go to the homepage</a>
+      </div>
+      <SearchBox id="not-found-search" showExamples={false} />
+    </div>
+  </div>
+</BaseLayout>

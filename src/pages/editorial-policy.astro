@@ -1,0 +1,106 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const asideLinks = [
+  { label: 'Independence', href: '#independence' },
+  { label: 'Sources and verification', href: '#sources-and-verification' },
+  { label: 'How content is produced', href: '#how-content-is-produced' },
+  { label: 'Dates and authorship', href: '#dates-and-authorship' },
+  { label: 'Advertising and affiliates', href: '#advertising-and-affiliates' },
+  { label: 'Contact', href: '#contact' },
+];
+---
+
+<ContentLayout
+  title="Editorial policy"
+  metaTitle="Editorial Policy: Sources, Review and Independence"
+  description="How FixProblemNow selects topics, checks official documentation, orders safety steps, dates guides, and handles independence and advertising."
+  canonical="/editorial-policy/"
+  eyebrow="Standards"
+  intro="This policy explains the standards behind every guide: where information comes from, how steps are checked, how risk is handled, and what the site will not claim."
+  updated="2026-11-15"
+  asideLinks={asideLinks}
+  asideNote="A correction changes the guide’s update date. See the corrections policy for how to report one."
+>
+  <h2 id="independence">Independence</h2>
+  <p>
+    FixProblemNow is an independent publication. It is not owned by, operated by, or officially
+    endorsed by any device manufacturer, software vendor, internet provider, or repair company.
+    Manufacturer names and product names are used to describe devices, menus, and official support
+    resources.
+  </p>
+  <p>
+    Editorial decisions are not sold. No company can pay for a favourable ranking, a positive
+    conclusion, or the removal of a safety warning. If the site ever accepts advertising or
+    affiliate links, those arrangements will be disclosed on the page where they appear and on the
+    <a href="/affiliate-disclosure/">affiliate disclosure page</a>.
+  </p>
+
+  <h2 id="sources-and-verification">Sources and verification</h2>
+  <p>
+    Guides rely primarily on first-party documentation: Microsoft Support, Apple Support, Google
+    Support, manufacturer support pages, and documentation for the specific protocol or standard
+    involved. Each published guide lists the sources used for its key claims.
+  </p>
+  <ul class="checklist">
+    <li>Prefer official documentation over forum posts, videos, or aggregator sites.</li>
+    <li>Do not present an unverified cause as a confirmed diagnosis.</li>
+    <li>Do not recommend unofficial firmware, modified system images, or driver bundles.</li>
+    <li>Describe menu differences when Windows, macOS, Android, or iOS versions diverge.</li>
+    <li>Link to the manufacturer for model-specific recovery, warranty, and hardware procedures.</li>
+  </ul>
+  <p>
+    We do not claim to have physically tested every device, app version, or network configuration
+    mentioned on the site. The standard is documented behaviour plus a clear, safety-reviewed
+    procedure. Where hands-on testing has not happened, the guide does not invent a test result.
+  </p>
+
+  <h2 id="how-content-is-produced">How content is produced</h2>
+  <p>
+    A guide starts with a symptom that can be described without technical vocabulary. The editor
+    identifies the smallest set of plausible causes, checks the relevant official tools, and orders
+    the steps from least to most disruptive. Reversible checks come before resets, and resets come
+    before erasing data or opening hardware.
+  </p>
+  <p>
+    Drafting and editing may involve software tools, including automated checks for links, spelling,
+    and structure. Publication requires a human review of the instructions, safety notes, and
+    sources. Automation is not used to generate fictional experiences, device test results, author
+    identities, or customer reviews.
+  </p>
+  <p>
+    Every guide must include symptoms, possible causes, preparation, a safety section where needed,
+    ordered steps, alternative paths, verification, a stopping point, frequently asked questions,
+    related guides, and sources. A page that lacks these elements is not ready to publish.
+  </p>
+
+  <h2 id="dates-and-authorship">Dates and authorship</h2>
+  <p>
+    Publication and update dates come from the guide’s metadata. We do not stagger dates to make the
+    library appear more active, and we do not backdate content. When a guide is materially changed,
+    its update date changes. A typo fix may be made without a visible date change if the guidance
+    itself is unchanged.
+  </p>
+  <p>
+    Guides are published under the FixProblemNow name rather than invented personal bylines. The
+    site does not claim professional certifications, medical qualifications, manufacturer
+    authorisation, or hands-on experience that it cannot substantiate.
+  </p>
+
+  <h2 id="advertising-and-affiliates">Advertising and affiliates</h2>
+  <p>
+    At the time of publication, the site contains no advertising, sponsored content, or affiliate
+    links. If affiliate links are introduced, they will be clearly disclosed before the link, and
+    the editorial conclusion will remain independent of commission. We will not recommend a product
+    solely because it pays a commission, and we will not hide a paid relationship in a generic
+    disclosure page alone.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Report a factual error, an outdated step, or a missing safety warning through the
+    <a href="/contact/?topic=correction">contact form</a>. Include the guide URL, your device model,
+    the software version, and the exact text or step that is wrong. The
+    <a href="/corrections-policy/">corrections policy</a> explains the review process.
+  </p>
+</ContentLayout>

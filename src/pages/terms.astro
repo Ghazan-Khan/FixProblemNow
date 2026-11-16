@@ -1,0 +1,109 @@
+---
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+const asideLinks = [
+  { label: 'Using the site', href: '#using-the-site' },
+  { label: 'No professional advice', href: '#no-professional-advice' },
+  { label: 'Acceptable use', href: '#acceptable-use' },
+  { label: 'Third-party links', href: '#third-party-links' },
+  { label: 'Intellectual property', href: '#intellectual-property' },
+  { label: 'Disclaimers and liability', href: '#disclaimers-and-liability' },
+  { label: 'Changes', href: '#changes' },
+];
+---
+
+<ContentLayout
+  title="Terms and conditions"
+  metaTitle="Terms and Conditions for Using FixProblemNow"
+  description="The terms that apply when you use FixProblemNow: informational purpose, acceptable use, third-party links, intellectual property and liability."
+  canonical="/terms/"
+  eyebrow="Terms"
+  intro="These terms apply when you access or use FixProblemNow. By using the site, you agree to them. If you do not agree, please do not use the site."
+  updated="2026-11-15"
+  asideLinks={asideLinks}
+  asideNote="Nothing in these terms limits rights that cannot be excluded under applicable law."
+>
+  <h2 id="using-the-site">Using the site</h2>
+  <p>
+    FixProblemNow provides general troubleshooting information for personal and internal business
+    use. You may read, print, and share links to the content. You may not present the content as
+    your own, republish it at scale, or use it to train a commercial product without written
+    permission.
+  </p>
+  <p>
+    The site is provided on an “as available” basis. Access may be interrupted for maintenance,
+    security, or reasons outside the operator’s control. No account, subscription, or service-level
+    commitment is offered.
+  </p>
+
+  <h2 id="no-professional-advice">No professional advice</h2>
+  <p>
+    The content is general information, not professional advice. It is not a substitute for
+    diagnosis by a qualified technician, legal advice, financial advice, medical advice, or the
+    official instructions supplied with a device. You are responsible for deciding whether a step is
+    appropriate for your equipment, your data, and your level of experience.
+  </p>
+  <p>
+    Always read the safety notes and the “when to stop” section of a guide. If a device is smoking,
+    sparking, unusually hot, or has a swollen battery, stop and seek qualified help.
+  </p>
+
+  <h2 id="acceptable-use">Acceptable use</h2>
+  <p>You agree not to:</p>
+  <ul>
+    <li>Use the site to break the law or infringe another person’s rights.</li>
+    <li>Attempt to gain unauthorised access to the server, other users, or connected systems.</li>
+    <li>Submit malicious code, spam, or automated requests that disrupt the service.</li>
+    <li>Use the contact form to send passwords, recovery keys, or other sensitive credentials.</li>
+    <li>Misrepresent an affiliation with FixProblemNow or a manufacturer.</li>
+  </ul>
+  <p>
+    Access may be limited or blocked if these rules are broken or if a request pattern threatens the
+    availability or security of the site.
+  </p>
+
+  <h2 id="third-party-links">Third-party links</h2>
+  <p>
+    Guides link to manufacturer support pages, operating-system documentation, and other third-party
+    sites. Those sites have their own terms and privacy policies. A link is not an endorsement of
+    everything on the destination site, and the destination may change after the guide is published.
+    Verify that a download comes from the manufacturer’s official domain before installing it.
+  </p>
+
+  <h2 id="intellectual-property">Intellectual property</h2>
+  <p>
+    The original text, site design, and branding on FixProblemNow are protected by applicable
+    intellectual-property law. Manufacturer names, product names, and logos remain the property of
+    their respective owners and are used for identification and compatibility only. Nothing on the
+    site grants a licence to use another party’s trademark.
+  </p>
+
+  <h2 id="disclaimers-and-liability">Disclaimers and liability</h2>
+  <p>
+    To the fullest extent permitted by law, the site is provided without warranties of any kind,
+    express or implied, including fitness for a particular purpose and non-infringement. The
+    operator does not warrant that a guide is complete, current, or suitable for your specific device
+    or situation.
+  </p>
+  <p>
+    To the fullest extent permitted by law, the operator is not liable for indirect, incidental,
+    special, consequential, or punitive losses, or for loss of data, profits, revenue, or business
+    opportunity, arising from use of or reliance on the site. Nothing in these terms excludes or
+    limits liability that cannot lawfully be excluded or limited, including liability for death or
+    personal injury caused by negligence where such limitation is prohibited.
+  </p>
+
+  <h2 id="changes">Changes</h2>
+  <p>
+    These terms may be updated when the site changes. The date at the top of the page shows the last
+    update. Continued use after a change means the updated terms apply. If a provision is found
+    unenforceable, the remaining provisions continue in effect.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Questions about these terms can be sent through the <a href="/contact/">contact form</a>. See
+    also the <a href="/privacy-policy/">privacy policy</a> and
+    <a href="/disclaimer/">disclaimer</a>.
+  </p>
+</ContentLayout>

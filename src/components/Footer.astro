@@ -1,0 +1,97 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { categories } from '../data/categories';
+import { footerLinks, site } from '../data/site';
+
+const year = new Date().getFullYear();
+
+const popular = [
+  { label: 'Laptop won\u2019t turn on', href: '/computer-problems/laptop-wont-turn-on/' },
+  { label: 'Wi-Fi connected but no internet', href: '/internet-wifi-problems/wifi-connected-but-no-internet/' },
+  { label: 'Printer says offline', href: '/printer-problems/printer-offline/' },
+  { label: 'Phone won\u2019t charge', href: '/phone-problems/phone-not-charging/' },
+  { label: 'Windows update failed', href: '/windows-problems/windows-update-failed/' },
+  { label: 'Gmail not receiving emails', href: '/email-problems/gmail-not-receiving-emails/' },
+];
+
+const mainCategories = categories.filter((category) =>
+  [
+    'computer-problems',
+    'windows-problems',
+    'mac-problems',
+    'phone-problems',
+    'android-problems',
+    'iphone-problems',
+    'internet-wifi-problems',
+    'printer-problems',
+    'email-problems',
+    'software-problems',
+  ].includes(category.slug),
+);
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="FixProblemNow home">
+          <Logo size={34} />
+          <span class="brand__text">
+            <span class="brand__name" style="color:#fff">Fix<em style="color:#5EEAD4">Problem</em>Now</span>
+          </span>
+        </a>
+        <p>
+          Independent troubleshooting guides for computers, phones, Wi-Fi, printers,
+          software, smart TVs and everyday technology. Clear steps, no jargon, and
+          honest limits on what you can safely fix yourself.
+        </p>
+        <a class="link-more" href="/problems/" style="color:#fff">
+          Browse all problems
+          <Icon name="arrow-right" size={15} />
+        </a>
+        <p class="footer-note">
+          FixProblemNow is not affiliated with any device manufacturer or software
+          vendor. Brand names are used only to describe compatibility.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h2>Categories</h2>
+        <ul>
+          {mainCategories.map((category) => (
+            <li><a href={`/${category.slug}/`}>{category.name}</a></li>
+          ))}
+          <li><a href="/categories/">All categories</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>Popular fixes</h2>
+        <ul>
+          {popular.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>FixProblemNow</h2>
+        <ul>
+          {footerLinks.company.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {year} {site.name}. All rights reserved.</p>
+      <div class="footer-bottom__links">
+        {footerLinks.legal.map((item) => (
+          <a href={item.href}>{item.label}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+</footer>
