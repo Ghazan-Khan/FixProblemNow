@@ -87,6 +87,44 @@ export function tooManyRequests(result: RateLimitResult): Response {
   );
 }
 
+const SITE_ORIGINS = new Set([
+  'https://fixproblemnow.com',
+  'https://www.fixproblemnow.com',
+  ...(process.env.SITE_URL
+    ? (() => {
+        try {
+          return [new URL(process.env.SITE_URL as string).origin];
+        } catch {
+          return [];
+        }
+      })()
+    : []),
+]);
+
+/**
+ * Allowlist for browser form posts. Astro's built-in check is disabled in
+ * astro.config.mjs because the production reverse proxy does not forward the
+ * public host, which makes the framework compare the Origin header against the
+ * wrong URL. This check only trusts this site's own origins (plus localhost for
+ * development) and rejects everything else.
+ */
+export function isAllowedOrigin(request: Request): boolean {
+  const origin = request.headers.get('origin');
+  // Non-browser clients (curl, server-to-server) omit Origin. They cannot ride
+  // an existing browser session, and these endpoints require JSON bodies, so
+  // they are handled by validation and rate limiting instead.
+  if (!origin) return true;
+  if (SITE_ORIGINS.has(origin)) return true;
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+}
+
+export function forbiddenOrigin(): Response {
+  return jsonResponse(
+    { ok: false, error: 'This request came from an unexpected origin.' },
+    403,
+  );
+}
+
 export function cleanText(value: unknown, maxLength: number): string {
   if (typeof value !== 'string') return '';
   return value.replace(/\r\n/g, '\n').replace(/\u0000/g, '').trim().slice(0, maxLength);

@@ -5,6 +5,8 @@ import {
   CATEGORY_SLUGS,
   cleanText,
   clientIp,
+  forbiddenOrigin,
+  isAllowedOrigin,
   jsonResponse,
   rateLimit,
   tooManyRequests,
@@ -55,6 +57,8 @@ export const GET: APIRoute = async () => {
 };
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+  if (!isAllowedOrigin(request)) return forbiddenOrigin();
+
   const limit = rateLimit(`feedback:${clientIp(request, clientAddress)}`, 20, 10 * 60_000);
   if (!limit.allowed) return tooManyRequests(limit);
 

@@ -359,8 +359,10 @@ Set the runtime environment variables for contact and feedback delivery in the h
 
 ### Platform notes
 
+- **Hostinger Web App (Node):** set Application type to `astro`, build script `build`, output directory `dist`, and entry file `server/entry.mjs`. The entry file is relative to the output directory. If the entry file is empty, Hostinger treats the build as a static site and serving `dist/` directly returns 403 because the HTML lives in `dist/client/`. Build settings are under *Websites → fixproblemnow.com → Deployments → Settings and redeploy*.
 - **Netlify / Cloudflare Pages static hosting:** `public/_headers` and `public/_redirects` are generated for these formats. The contact and feedback endpoints still need a server runtime; a static-only deployment will not process them.
 - **Node/VPS/container:** run `node dist/server/entry.mjs` behind a reverse proxy that adds static-asset headers (see the caveat above) and forwards `X-Forwarded-For` so rate limiting sees client IPs.
+- **Reverse proxies and form posts:** Astro's built-in origin check is disabled because some proxies do not forward the public host. `src/lib/security.ts` enforces its own origin allowlist for the API routes instead; widen it via `SITE_URL` if you add another domain.
 - **CDN:** HTML can be cached, but re-deploy after content changes. `/search-index.json` is cached for one hour by the supplied headers. API responses are `no-store`.
 
 ---

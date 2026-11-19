@@ -12,6 +12,11 @@ export default defineConfig({
   trailingSlash: 'always',
   output: 'static',
   adapter: node({ mode: 'standalone' }),
+  // Hostinger terminates TLS and proxies to the Node server without forwarding
+  // the public host, so Astro's built-in origin check cannot match same-origin
+  // form posts (it compares against the internal proxy URL). The API routes do
+  // their own allowlist check in src/lib/security.ts instead.
+  security: { checkOrigin: false },
   integrations: [
     sitemap({
       filter: (page) =>

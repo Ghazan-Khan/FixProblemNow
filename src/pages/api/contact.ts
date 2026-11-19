@@ -2,6 +2,8 @@ import type { APIRoute } from 'astro';
 import {
   cleanText,
   clientIp,
+  forbiddenOrigin,
+  isAllowedOrigin,
   isEmail,
   jsonResponse,
   rateLimit,
@@ -127,6 +129,8 @@ export const GET: APIRoute = async () => {
 };
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+  if (!isAllowedOrigin(request)) return forbiddenOrigin();
+
   const limit = rateLimit(`contact:${clientIp(request, clientAddress)}`, 5, 10 * 60_000);
   if (!limit.allowed) return tooManyRequests(limit);
 
